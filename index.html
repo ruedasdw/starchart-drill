@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Star Chart — Times Tables Trainer</title>
+<style>
+  :root{
+    --night:#191631; --panel:#221E42; --panel2:#2A2554; --line:#37316B;
+    --ink:#EDEAFB; --dim:#B9B3E0; --amber:#FFB744; --amber-dk:#C77F12;
+    --mint:#4EE1A0; --coral:#FF6B81; --gold:#FFD86B; --violet:#8E7DFF;
+    --r:14px;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0; padding:0; background:var(--night); color:var(--ink);
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; min-height:100%;}
+  body{display:flex; justify-content:center;}
+  #app{width:100%; max-width:540px; padding:16px 16px 40px;}
+  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-variant-numeric:tabular-nums;}
+  h1,h2{margin:0; font-weight:800; letter-spacing:.3px;}
+  .eyebrow{font-size:12px; text-transform:uppercase; letter-spacing:2px; color:var(--amber); font-weight:700;}
+  .card{background:var(--panel); border:1px solid var(--line); border-radius:var(--r); padding:18px; margin-top:14px;}
+  button{font:inherit; cursor:pointer; border:none; border-radius:12px; color:var(--night);
+    background:var(--amber); font-weight:800; padding:14px 18px; font-size:17px; width:100%;}
+  button.secondary{background:var(--panel2); color:var(--ink); border:1px solid var(--line);}
+  button.ghost{background:transparent; color:var(--dim); border:1px solid var(--line); width:auto; padding:9px 14px; font-size:14px; font-weight:600;}
+  button:focus-visible, input:focus-visible, .chip:focus-visible{outline:3px solid var(--violet); outline-offset:2px;}
+  button:active{transform:translateY(1px);}
+  input[type=text], input[type=number]{width:100%; font:inherit; font-size:18px; padding:12px 14px;
+    border-radius:12px; border:1px solid var(--line); background:var(--panel2); color:var(--ink);}
+  .row{display:flex; gap:10px; align-items:center;}
+  .grow{flex:1;}
+  .center{text-align:center;}
+  .screen{display:none;}
+  .screen.active{display:block; animation:fadein .18s ease-out;}
+  @keyframes fadein{from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:none;}}
+
+  /* header */
+  .topbar{display:flex; justify-content:space-between; align-items:center; padding:6px 2px;}
+  .brand{font-weight:800; font-size:15px; color:var(--dim);}
+  .brand b{color:var(--amber);}
+
+  /* table chips */
+  .chips{display:grid; grid-template-columns:repeat(6,1fr); gap:8px; margin-top:10px;}
+  .chip{padding:12px 0; text-align:center; border-radius:10px; background:var(--panel2);
+    border:1px solid var(--line); color:var(--dim); font-weight:800; font-size:17px; cursor:pointer; user-select:none;}
+  .chip.on{background:var(--amber); color:var(--night); border-color:var(--amber);}
+
+  /* home menu */
+  .menu{display:grid; gap:10px; margin-top:12px;}
+  .menu button{display:flex; justify-content:space-between; align-items:center; text-align:left;}
+  .menu .sub{display:block; font-size:13px; font-weight:600; opacity:.75; margin-top:3px;}
+  .statline{display:flex; gap:14px; justify-content:center; margin-top:10px; color:var(--dim); font-size:14px;}
+  .statline b{color:var(--gold);}
+
+  /* session */
+  .hud{display:flex; justify-content:space-between; align-items:center; font-size:14px; color:var(--dim); margin-bottom:6px;}
+  .hud .pts{color:var(--gold); font-weight:800;}
+  .hud .streak{color:var(--coral); font-weight:800;}
+  .problem{font-size:64px; font-weight:800; text-align:center; margin:26px 0 10px; letter-spacing:2px; color:var(--ink);}
+  .problem .op{color:var(--amber);}
+  .answerbox{max-width:220px; margin:0 auto; text-align:center;}
+  .answerbox input{text-align:center; font-size:32px; font-weight:800;}
+  .feedback{min-height:30px; text-align:center; font-weight:800; margin-top:10px; font-size:18px;}
+  .feedback.good{color:var(--mint);} .feedback.bad{color:var(--coral);}
+  .timerbar{height:8px; background:var(--panel2); border-radius:6px; overflow:hidden; margin:8px 0 2px;}
+  .timerbar i{display:block; height:100%; background:var(--amber); width:100%; transition:width .25s linear;}
+  .flyup{position:fixed; font-weight:800; color:var(--gold); pointer-events:none; animation:fly .7s ease-out forwards; z-index:9;}
+  @keyframes fly{from{opacity:1; transform:translateY(0);} to{opacity:0; transform:translateY(-46px);}}
+  .shake{animation:shake .28s;}
+  @keyframes shake{20%{transform:translateX(-7px)}40%{transform:translateX(7px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+  @media (prefers-reduced-motion: reduce){ *{animation:none !important; transition:none !important;} }
+
+  /* flashcards */
+  .fcActions{display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-top:14px;}
+  .fcActions button{font-size:14px; padding:12px 6px;}
+  .fcActions .fast{background:var(--mint);} .fcActions .slow{background:var(--amber);} .fcActions .no{background:var(--coral);}
+
+  /* star chart */
+  .gridwrap{overflow-x:auto; margin-top:12px;}
+  table.star{border-collapse:separate; border-spacing:4px; margin:0 auto;}
+  table.star th{font-size:11px; color:var(--dim); font-weight:700; padding:2px;}
+  table.star td{width:26px; height:26px; border-radius:6px; background:var(--panel2); border:1px solid var(--line);}
+  td.l1{background:#5A2A3C; border-color:#7A3950;}          /* struggling */
+  td.l2{background:#6B5220; border-color:#8f6E2B;}          /* slow */
+  td.l3{background:#1F5C44; border-color:#2A7A5B;}          /* getting there */
+  td.l4{background:var(--gold); border-color:var(--gold); box-shadow:0 0 8px rgba(255,216,107,.55);} /* mastered */
+  .legend{display:flex; flex-wrap:wrap; gap:12px; justify-content:center; margin-top:12px; font-size:12.5px; color:var(--dim);}
+  .legend i{display:inline-block; width:13px; height:13px; border-radius:4px; margin-right:5px; vertical-align:-2px;}
+  .bigcount{font-size:44px; font-weight:800; color:var(--gold); text-align:center;}
+
+  /* parent */
+  .focuslist{margin:10px 0 0; padding:0; list-style:none;}
+  .focuslist li{display:flex; justify-content:space-between; padding:9px 4px; border-bottom:1px solid var(--line); font-size:15px;}
+  .focuslist .why{color:var(--dim); font-size:13px;}
+  .kpis{display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-top:12px;}
+  .kpi{background:var(--panel2); border:1px solid var(--line); border-radius:10px; padding:10px 6px; text-align:center;}
+  .kpi b{display:block; font-size:20px; color:var(--amber);}
+  .kpi span{font-size:11.5px; color:var(--dim);}
+  .note{font-size:13px; color:var(--dim); line-height:1.5; margin-top:12px;}
+  .warn{color:var(--coral); font-size:13px; margin-top:8px; display:none;}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="topbar">
+    <div class="brand">⭐ <b>Star Chart</b> · times tables</div>
+    <button class="ghost" id="btnSettings" aria-label="Settings">⚙</button>
+  </div>
+  <div class="warn" id="storageWarn">Heads up: this browser isn't saving progress between visits. Practice still works — progress lasts for this session.</div>
+
+  <!-- SETUP -->
+  <section class="screen" id="scr-setup">
+    <div class="card">
+      <div class="eyebrow">First time setup</div>
+      <h2 style="margin-top:6px;">Who's training?</h2>
+      <div style="margin-top:12px;"><input type="text" id="inName" maxlength="20" placeholder="First name" autocomplete="off"></div>
+      <h2 style="margin-top:20px; font-size:17px;">Pick your tables</h2>
+      <p style="color:var(--dim); font-size:14px; margin:6px 0 0;">You can change these anytime in ⚙ settings.</p>
+      <div class="chips" id="chipsSetup" role="group" aria-label="Tables to practice"></div>
+      <div class="row" style="margin-top:16px;">
+        <button class="secondary" style="width:auto; padding:12px 16px;" id="btnAllTables">All 2–12</button>
+        <button class="grow" id="btnStart">Start training</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOME -->
+  <section class="screen" id="scr-home">
+    <div class="card center">
+      <div class="eyebrow" id="homeHello">Ready?</div>
+      <div class="statline">
+        <span>⭐ <b id="homePts">0</b> pts</span>
+        <span>🔥 best streak <b id="homeStreak">0</b></span>
+        <span>💡 <b id="homeMastered">0</b>/<span id="homeTotal">66</span> lit</span>
+      </div>
+    </div>
+    <div class="menu">
+      <button onclick="startQuickfire()">⚡ Quickfire <span class="sub">60 seconds — how many can you get?</span></button>
+      <button class="secondary" onclick="startPractice()">🎯 Practice round <span class="sub">12 questions picked just for you</span></button>
+      <button class="secondary" onclick="startFlashcards()">🃏 Flashcards <span class="sub">Flip and rate yourself</span></button>
+      <button class="secondary" onclick="showChart()">🌌 My star chart <span class="sub">Light up the whole board</span></button>
+    </div>
+  </section>
+
+  <!-- SESSION -->
+  <section class="screen" id="scr-session">
+    <div class="hud">
+      <span id="hudMode">Practice</span>
+      <span class="streak" id="hudStreak"></span>
+      <span class="pts" id="hudPts">0 pts</span>
+    </div>
+    <div class="timerbar" id="timerbar" style="visibility:hidden;"><i id="timerfill"></i></div>
+    <div class="card">
+      <div class="problem mono" id="problem">7 <span class="op">×</span> 8</div>
+      <div class="answerbox" id="answerWrap">
+        <input type="number" id="inAnswer" inputmode="numeric" autocomplete="off" aria-label="Your answer">
+      </div>
+      <div class="fcActions" id="fcActions" style="display:none;">
+        <button class="fast" onclick="fcRate('fast')">⚡ Knew it fast</button>
+        <button class="slow" onclick="fcRate('slow')">🐢 Got it, slowly</button>
+        <button class="no" onclick="fcRate('no')">❌ Didn't know</button>
+      </div>
+      <div class="feedback" id="feedback" aria-live="polite"></div>
+      <div class="row" style="margin-top:12px;">
+        <button class="ghost" onclick="endSession(true)">End round</button>
+        <div class="grow center" style="color:var(--dim); font-size:13px;" id="progressNote"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESULTS -->
+  <section class="screen" id="scr-results">
+    <div class="card center">
+      <div class="eyebrow">Round complete</div>
+      <div class="bigcount" id="resPts">+0</div>
+      <div class="statline">
+        <span>✅ <b id="resRight">0</b> right</span>
+        <span>⚡ <b id="resFast">0</b> fast</span>
+        <span>🔥 streak <b id="resStreak">0</b></span>
+      </div>
+      <p id="resMsg" style="color:var(--dim); margin:14px 0 4px;"></p>
+      <div class="menu">
+        <button onclick="repeatMode()">Go again</button>
+        <button class="secondary" onclick="show('scr-home'); refreshHome();">Home</button>
+        <button class="secondary" onclick="showChart()">🌌 See star chart</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- STAR CHART (kid) -->
+  <section class="screen" id="scr-chart">
+    <div class="card">
+      <div class="eyebrow">My star chart</div>
+      <h2 style="margin-top:4px;">Light up the board, <span id="chartName"></span></h2>
+      <div class="gridwrap"><table class="star" id="starGrid"></table></div>
+      <div class="legend">
+        <span><i style="background:var(--panel2); border:1px solid var(--line);"></i>not yet</span>
+        <span><i style="background:#5A2A3C;"></i>working on it</span>
+        <span><i style="background:#6B5220;"></i>right but slow</span>
+        <span><i style="background:#1F5C44;"></i>almost</span>
+        <span><i style="background:var(--gold);"></i>lit ⭐</span>
+      </div>
+      <div class="menu" style="margin-top:14px;"><button class="secondary" onclick="show('scr-home'); refreshHome();">Home</button></div>
+    </div>
+  </section>
+
+  <!-- SETTINGS / PARENT -->
+  <section class="screen" id="scr-settings">
+    <div class="card">
+      <div class="eyebrow">Settings</div>
+      <div class="row" style="margin-top:10px; justify-content:space-between;">
+        <span>Sounds</span>
+        <button class="ghost" id="btnSound" onclick="toggleSound()">On</button>
+      </div>
+      <h2 style="margin-top:18px; font-size:16px;">Tables in rotation</h2>
+      <div class="chips" id="chipsSettings"></div>
+    </div>
+    <div class="card">
+      <div class="eyebrow">For grown-ups</div>
+      <div class="kpis">
+        <div class="kpi"><b id="pAcc">–</b><span>accuracy</span></div>
+        <div class="kpi"><b id="pFlu">–</b><span>fluent facts</span></div>
+        <div class="kpi"><b id="pAtt">0</b><span>answers total</span></div>
+        <div class="kpi"><b id="pMin">0</b><span>minutes</span></div>
+      </div>
+      <h2 style="margin-top:16px; font-size:16px;">Focus facts right now</h2>
+      <ul class="focuslist" id="focusList"></ul>
+      <p class="note" id="parentSuggestion"></p>
+      <p class="note">Fluent = answered correctly in under 3 seconds on recent tries. Slow-but-correct usually means she knows the fact but is still computing it (skip counting or finger counting) instead of recalling it — more quickfire reps on those exact facts is the fix. Progress saves in this browser on this device.</p>
+      <div class="row" style="margin-top:12px;">
+        <button class="ghost" onclick="resetData()">Reset all progress</button>
+        <button class="grow secondary" onclick="show('scr-home'); refreshHome();">Done</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+"use strict";
+/* ---------- state & storage ---------- */
+const FAST_MS = 3000, SLOW_MS = 7000, MIN_T = 2, MAX_T = 12;
+let S = null;                 // app state
+let mem = {};                 // in-memory fallback
+let canStore = true;
+try { localStorage.setItem("__t","1"); localStorage.removeItem("__t"); }
+catch(e){ canStore = false; document.getElementById("storageWarn").style.display="block"; }
+
+function loadState(){
+  let raw = canStore ? localStorage.getItem("starchart.v1") : mem.raw;
+  if(raw){ try { return JSON.parse(raw); } catch(e){} }
+  return null;
+}
+function saveState(){
+  const raw = JSON.stringify(S);
+  if(canStore) localStorage.setItem("starchart.v1", raw); else mem.raw = raw;
+}
+function freshState(name, tables){
+  return { name, tables, sound:true, points:0, bestStreak:0, attempts:0, correct:0, ms:0,
+           facts:{} }; // facts["a,b"] a<=b : {att,cor,box,recent:[], last:0}
+}
+function factKey(a,b){ return Math.min(a,b)+","+Math.max(a,b); }
+function getFact(k){
+  if(!S.facts[k]) S.facts[k] = {att:0,cor:0,box:0,recent:[],last:0};
+  return S.facts[k];
+}
+function allPairs(){
+  const t = S.tables, out = [], seen = {};
+  for(const a of t) for(let b=MIN_T;b<=MAX_T;b++){
+    const k = factKey(a,b);
+    if(!seen[k]){ seen[k]=1; out.push(k); }
+  }
+  return out;
+}
+
+/* ---------- fact scoring ---------- */
+function factLevel(k){                    // 0 unseen, 1 struggling, 2 slow, 3 close, 4 mastered
+  const f = S.facts[k];
+  if(!f || f.att===0) return 0;
+  const rec = f.recent.slice(-3);
+  const lastWrong = rec.includes("no");
+  if(f.box===3 && rec.length===3 && rec.every(r=>r==="fast")) return 4;
+  if(f.box>=2 && !lastWrong) return 3;
+  if(!lastWrong && rec.length && rec.every(r=>r!=="no")) return 2;
+  return 1;
+}
+function recordResult(a,b,result){        // result: fast | slow | no
+  const f = getFact(factKey(a,b));
+  f.att++; if(result!=="no") f.cor++;
+  f.recent.push(result); if(f.recent.length>5) f.recent.shift();
+  if(result==="fast") f.box = Math.min(3, f.box+1);
+  else if(result==="no") f.box = Math.max(0, f.box-1);
+  f.last = Date.now();
+  S.attempts++; if(result!=="no") S.correct++;
+  saveState();
+}
+
+/* ---------- adaptive queue ---------- */
+function weightedPick(excludeKey){
+  const pairs = allPairs();
+  let best = [], bestW = -1;
+  const pool = [];
+  for(const k of pairs){
+    if(k===excludeKey && pairs.length>1) continue;
+    const f = S.facts[k], lvl = factLevel(k);
+    let w = [8, 10, 6, 3, 1][lvl];                       // unseen fairly high, struggling highest
+    if(f && Date.now()-f.last > 36e5) w += 2;            // due again after an hour
+    pool.push([k,w]);
+  }
+  let total = pool.reduce((s,p)=>s+p[1],0), r = Math.random()*total;
+  for(const [k,w] of pool){ r-=w; if(r<=0) return k; }
+  return pool[pool.length-1][0];
+}
+function pairToProblem(k){
+  const [x,y] = k.split(",").map(Number);
+  return Math.random()<.5 ? [x,y] : [y,x];
+}
+
+/* ---------- audio ---------- */
+let AC = null;
+function beep(kind){
+  if(!S.sound) return;
+  try{
+    AC = AC || new (window.AudioContext||window.webkitAudioContext)();
+    const t = AC.currentTime;
+    const tone=(f,st,dur,type="sine",gain=.12)=>{ const o=AC.createOscillator(),g=AC.createGain();
+      o.type=type; o.frequency.value=f; o.connect(g); g.connect(AC.destination);
+      g.gain.setValueAtTime(gain,t+st); g.gain.exponentialRampToValueAtTime(.0001,t+st+dur);
+      o.start(t+st); o.stop(t+st+dur+.02); };
+    if(kind==="good"){ tone(660,0,.09); tone(880,.09,.12); }
+    else if(kind==="bad"){ tone(150,0,.18,"sawtooth",.08); }
+    else if(kind==="streak"){ tone(660,0,.08); tone(830,.08,.08); tone(990,.16,.14); }
+  }catch(e){}
+}
+
+/* ---------- screens ---------- */
+function show(id){
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+}
+function refreshHome(){
+  document.getElementById("homeHello").textContent = "Ready, " + S.name + "?";
+  document.getElementById("homePts").textContent = S.points;
+  document.getElementById("homeStreak").textContent = S.bestStreak;
+  const pairs = allPairs();
+  document.getElementById("homeTotal").textContent = pairs.length;
+  document.getElementById("homeMastered").textContent = pairs.filter(k=>factLevel(k)===4).length;
+}
+
+/* ---------- table chips ---------- */
+function renderChips(elId, selected){
+  const el = document.getElementById(elId); el.innerHTML="";
+  for(let n=MIN_T;n<=MAX_T;n++){
+    const c = document.createElement("div");
+    c.className = "chip"+(selected.includes(n)?" on":""); c.textContent = n;
+    c.tabIndex = 0; c.setAttribute("role","checkbox"); c.setAttribute("aria-checked", selected.includes(n));
+    const toggle = ()=>{ c.classList.toggle("on"); c.setAttribute("aria-checked", c.classList.contains("on"));
+      if(S){ S.tables = readChips(elId); saveState(); } };
+    c.onclick = toggle;
+    c.onkeydown = e=>{ if(e.key===" "||e.key==="Enter"){ e.preventDefault(); toggle(); } };
+    el.appendChild(c);
+  }
+}
+function readChips(elId){
+  return [...document.querySelectorAll("#"+elId+" .chip")].map((c,i)=>c.classList.contains("on")?i+MIN_T:null).filter(v=>v);
+}
+
+/* ---------- session engine ---------- */
+let sess = null, qTimer = null, tickTimer = null, askedAt = 0;
+function newSession(mode){
+  sess = { mode, asked:0, right:0, fast:0, streak:0, pts:0, limit: mode==="practice"?12:(mode==="flash"?12:Infinity),
+           lastKey:null, cur:null, revealed:false, t0:Date.now() };
+  document.getElementById("hudMode").textContent = mode==="quick"?"⚡ Quickfire":(mode==="flash"?"🃏 Flashcards":"🎯 Practice");
+  document.getElementById("fcActions").style.display = mode==="flash"?"none":"none";
+  document.getElementById("answerWrap").style.display = mode==="flash"?"none":"block";
+  document.getElementById("timerbar").style.visibility = mode==="quick"?"visible":"hidden";
+  updateHUD(); show("scr-session"); nextProblem();
+  if(mode==="quick"){
+    let remain = 60;
+    document.getElementById("timerfill").style.width = "100%";
+    tickTimer = setInterval(()=>{ remain--; document.getElementById("timerfill").style.width = (remain/60*100)+"%";
+      if(remain<=0) endSession(); }, 1000);
+  }
+}
+function startQuickfire(){ newSession("quick"); }
+function startPractice(){ newSession("practice"); }
+function startFlashcards(){ newSession("flash"); }
+let lastMode = null;
+function repeatMode(){ if(lastMode==="quick")startQuickfire(); else if(lastMode==="flash")startFlashcards(); else startPractice(); }
+
+function nextProblem(){
+  if(sess.asked >= sess.limit){ endSession(); return; }
+  const k = weightedPick(sess.lastKey); sess.lastKey = k;
+  sess.cur = pairToProblem(k); sess.revealed = false;
+  const [a,b] = sess.cur;
+  document.getElementById("problem").innerHTML = a+' <span class="op">×</span> '+b;
+  document.getElementById("feedback").textContent = "";
+  document.getElementById("progressNote").textContent =
+    sess.limit===Infinity ? (sess.right+" answered") : ((sess.asked+1)+" of "+sess.limit);
+  if(sess.mode==="flash"){
+    document.getElementById("fcActions").style.display = "none";
+    document.getElementById("feedback").textContent = "Tap the card (or press Space) to reveal";
+  } else {
+    const inp = document.getElementById("inAnswer"); inp.value = ""; inp.focus();
+  }
+  askedAt = Date.now();
+}
+function updateHUD(){
+  document.getElementById("hudPts").textContent = sess.pts + " pts";
+  document.getElementById("hudStreak").textContent = sess.streak>=2 ? "🔥 ×"+multiplier() : "";
+}
+function multiplier(){ return Math.min(5, 1 + Math.floor(sess.streak/5)); }
+
+function submitAnswer(){
+  if(!sess || sess.mode==="flash" || sess.revealed) return;
+  const inp = document.getElementById("inAnswer");
+  if(inp.value==="") return;
+  const [a,b] = sess.cur, ans = Number(inp.value), ms = Date.now()-askedAt;
+  sess.asked++; sess.revealed = true;
+  const fb = document.getElementById("feedback");
+  if(ans === a*b){
+    const fast = ms < FAST_MS && sess.mode!=="untimed";
+    const result = fast ? "fast" : "slow";
+    recordResult(a,b,result);
+    sess.right++; if(fast) sess.fast++;
+    sess.streak++;
+    const gained = (fast?10:5) * multiplier();
+    sess.pts += gained; S.points += gained;
+    if(sess.streak>S.bestStreak) S.bestStreak = sess.streak;
+    saveState();
+    fb.className = "feedback good";
+    fb.textContent = fast ? "⚡ Fast! +"+gained : "✅ Right (+"+gained+") — let's get it faster";
+    flyup("+"+gained);
+    beep(sess.streak%5===0 ? "streak" : "good");
+    setTimeout(nextProblem, fast?450:900);
+  } else {
+    recordResult(a,b,"no");
+    sess.streak = 0;
+    fb.className = "feedback bad";
+    fb.textContent = "Not this time — "+a+" × "+b+" = "+(a*b)+". It'll come back around.";
+    document.getElementById("problem").classList.add("shake");
+    setTimeout(()=>document.getElementById("problem").classList.remove("shake"), 320);
+    beep("bad");
+    setTimeout(nextProblem, 1700);
+  }
+  updateHUD();
+}
+function flyup(txt){
+  const el = document.createElement("div"); el.className = "flyup mono"; el.textContent = txt;
+  const box = document.getElementById("problem").getBoundingClientRect();
+  el.style.left = (box.left + box.width/2 + (Math.random()*60-30)) + "px";
+  el.style.top = (box.top) + "px";
+  document.body.appendChild(el); setTimeout(()=>el.remove(), 750);
+}
+
+/* flashcards */
+function revealCard(){
+  if(sess.mode!=="flash" || sess.revealed) return;
+  sess.revealed = true;
+  const [a,b] = sess.cur;
+  document.getElementById("problem").innerHTML = a+' <span class="op">×</span> '+b+' <span class="op">=</span> '+(a*b);
+  document.getElementById("feedback").textContent = "Be honest — how well did you know it?";
+  document.getElementById("fcActions").style.display = "grid";
+}
+function fcRate(r){
+  const [a,b] = sess.cur;
+  recordResult(a,b,r);
+  sess.asked++;
+  if(r!=="no"){ sess.right++; sess.streak++; const g=(r==="fast"?8:4); sess.pts+=g; S.points+=g;
+    if(r==="fast") sess.fast++;
+    if(sess.streak>S.bestStreak) S.bestStreak=sess.streak; saveState(); beep("good"); }
+  else { sess.streak=0; beep("bad"); }
+  updateHUD(); nextProblem();
+}
+
+function endSession(manual){
+  clearInterval(tickTimer); tickTimer = null;
+  if(!sess) return;
+  S.ms += Date.now() - sess.t0; saveState();
+  lastMode = sess.mode;
+  document.getElementById("resPts").textContent = "+"+sess.pts;
+  document.getElementById("resRight").textContent = sess.right;
+  document.getElementById("resFast").textContent = sess.fast;
+  document.getElementById("resStreak").textContent = sess.streak>0?sess.streak:0;
+  const acc = sess.asked ? Math.round(100*sess.right/sess.asked) : 0;
+  let msg = "";
+  if(sess.asked===0) msg = "No questions this round — jump back in when you're ready.";
+  else if(acc>=90 && sess.fast>=sess.right*0.7) msg = "That's real fluency, "+S.name+". The board is lighting up.";
+  else if(acc>=90) msg = "Super accurate — now let's chase speed on the slow ones.";
+  else msg = "Every miss came back into your deck. That's how facts get lit.";
+  document.getElementById("resMsg").textContent = msg;
+  sess = null;
+  show("scr-results");
+}
+
+/* ---------- star chart ---------- */
+function showChart(){
+  document.getElementById("chartName").textContent = S.name;
+  const tbl = document.getElementById("starGrid");
+  let html = "<tr><th></th>";
+  for(let b=MIN_T;b<=MAX_T;b++) html += "<th>"+b+"</th>";
+  html += "</tr>";
+  for(let a=MIN_T;a<=MAX_T;a++){
+    html += "<tr><th>"+a+"</th>";
+    for(let b=MIN_T;b<=MAX_T;b++){
+      const lvl = factLevel(factKey(a,b));
+      html += '<td class="l'+lvl+'" title="'+a+"×"+b+'"></td>';
+    }
+    html += "</tr>";
+  }
+  tbl.innerHTML = html;
+  show("scr-chart");
+}
+
+/* ---------- settings / parent ---------- */
+function openSettings(){
+  renderChips("chipsSettings", S.tables);
+  document.getElementById("btnSound").textContent = S.sound ? "On" : "Off";
+  // parent stats
+  const pairs = allPairs();
+  const seen = pairs.filter(k=>S.facts[k] && S.facts[k].att>0);
+  const fluent = pairs.filter(k=>factLevel(k)===4).length;
+  document.getElementById("pAcc").textContent = S.attempts ? Math.round(100*S.correct/S.attempts)+"%" : "–";
+  document.getElementById("pFlu").textContent = fluent+"/"+pairs.length;
+  document.getElementById("pAtt").textContent = S.attempts;
+  document.getElementById("pMin").textContent = Math.round(S.ms/60000);
+  // focus facts: lowest level, most-missed first
+  const scored = seen.map(k=>{ const f=S.facts[k];
+    return {k, lvl:factLevel(k), missRate: 1 - f.cor/f.att, att:f.att}; })
+    .filter(x=>x.lvl<=2)
+    .sort((x,y)=> x.lvl-y.lvl || y.missRate-x.missRate).slice(0,8);
+  const ul = document.getElementById("focusList"); ul.innerHTML = "";
+  if(scored.length===0){ ul.innerHTML = "<li><span>Nothing urgent — keep rotating.</span></li>"; }
+  for(const s of scored){
+    const [a,b] = s.k.split(",");
+    const li = document.createElement("li");
+    li.innerHTML = "<span class='mono'><b>"+a+" × "+b+"</b></span><span class='why'>"+
+      (s.lvl===1?"missing it":"right but slow")+" · "+s.att+" tries</span>";
+    ul.appendChild(li);
+  }
+  const sug = document.getElementById("parentSuggestion");
+  if(S.attempts < 30) sug.textContent = "Suggestion: two or three 5-minute sessions a day beats one long one. Start with a Practice round, end with a Quickfire.";
+  else if(scored.length>3) sug.textContent = "Suggestion: the facts above are the bottleneck. Keep sessions short and daily — the deck automatically serves these more often until they're fluent.";
+  else sug.textContent = "Suggestion: she's close. Keep daily Quickfire sprints going so mastered facts stay lit — retention is the game now.";
+  show("scr-settings");
+}
+function toggleSound(){ S.sound = !S.sound; saveState(); document.getElementById("btnSound").textContent = S.sound?"On":"Off"; }
+function resetData(){
+  if(confirm("Erase all progress and start fresh?")){
+    const name = S.name, tables = S.tables;
+    S = freshState(name, tables); saveState(); refreshHome(); show("scr-home");
+  }
+}
+
+/* ---------- input wiring ---------- */
+document.getElementById("inAnswer").addEventListener("keydown", e=>{ if(e.key==="Enter") submitAnswer(); });
+document.getElementById("inAnswer").addEventListener("input", e=>{
+  // auto-submit when the typed answer has the right number of digits and is correct OR clearly complete
+  if(!sess || sess.revealed) return;
+  const [a,b] = sess.cur, v = e.target.value;
+  if(v.length >= String(a*b).length) submitAnswer();
+});
+document.addEventListener("keydown", e=>{
+  if(sess && sess.mode==="flash"){
+    if(e.key===" " && !sess.revealed){ e.preventDefault(); revealCard(); }
+    else if(sess.revealed){
+      if(e.key==="1") fcRate("fast"); else if(e.key==="2") fcRate("slow"); else if(e.key==="3") fcRate("no");
+    }
+  }
+});
+document.getElementById("problem").addEventListener("click", ()=>{ if(sess && sess.mode==="flash") revealCard(); });
+document.getElementById("btnSettings").addEventListener("click", ()=>{ if(S) openSettings(); });
+document.getElementById("btnAllTables").addEventListener("click", ()=>{
+  document.querySelectorAll("#chipsSetup .chip").forEach(c=>{ c.classList.add("on"); c.setAttribute("aria-checked","true"); });
+});
+document.getElementById("btnStart").addEventListener("click", ()=>{
+  const name = document.getElementById("inName").value.trim() || "champ";
+  const tables = readChips("chipsSetup");
+  if(tables.length===0){ alert("Pick at least one table."); return; }
+  S = freshState(name, tables); saveState(); refreshHome(); show("scr-home");
+});
+
+/* ---------- boot ---------- */
+S = loadState();
+if(S){ refreshHome(); show("scr-home"); }
+else { renderChips("chipsSetup", [3,4,6,7,8,9]); show("scr-setup"); }
+</script>
+</body>
+</html>
