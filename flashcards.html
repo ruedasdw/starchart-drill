@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Early Worlds Flash Cards</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Inter:wght@400;600;700;800&display=swap">
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; }
+  body {
+    font-family: Inter, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    background: #0f1729; color: #f7f3ec; margin: 0; padding: 0 16px;
+    display: flex; flex-direction: column;
+  }
+  h1, .wm, .word, .hook { font-family: "Atkinson Hyperlegible", Inter, Arial, sans-serif; }
+  button, .card { touch-action: manipulation; -webkit-user-select: none; user-select: none; }
+  .top { padding: 12px 2px 0; }
+  .lockup { display: flex; align-items: center; gap: 8px; }
+  .lockup svg { width: 30px; height: 30px; border-radius: 8px; flex: none; }
+  .wm { font-weight: 700; font-size: 17px; }
+  .desc { font-size: 10.5px; letter-spacing: 3px; color: #f5b942; font-weight: 700; margin-top: 3px; }
+  h1 { font-size: clamp(19px, 2.6vw, 26px); margin: 8px 0 2px; }
+  .sub { color: rgba(247,243,236,.7); font-size: clamp(13px, 1.8vw, 17px); margin: 0 0 6px; }
+  .counts { font-size: clamp(14px, 2vw, 19px); margin: 4px 0 8px; color: rgba(247,243,236,.85); }
+  .counts b { color: #4cc98f; } .counts .left { color: #f5b942; font-weight: 700; }
+  .stage {
+    width: 100%; max-width: 760px; margin: 0 auto;
+    flex: 1; display: flex; flex-direction: column; justify-content: center; padding-bottom: 14px;
+  }
+  .card {
+    position: relative; width: 100%; flex: 1; min-height: 330px; max-height: 640px;
+    cursor: pointer;
+  }
+  .face {
+    height: 100%; border-radius: 24px; padding: clamp(20px, 3.5vw, 40px);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center; text-align: center;
+    gap: clamp(10px, 1.8vh, 20px); overflow-y: auto;
+    animation: pop .18s ease-out;
+  }
+  @keyframes pop { from { transform: scale(.97); opacity: .5; } to { transform: scale(1); opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) { .face { animation: none; } }
+  .card .back { display: none; }
+  .card.flipped .front { display: none; }
+  .card.flipped .back { display: flex; }
+  .front { background: #161f3a; border: 3px solid #2a3558; }
+  .back { background: #f7f3ec; color: #1e2233; border: 3px solid #f5b942; }
+  .emoji { font-size: clamp(54px, 9vw, 88px); line-height: 1; }
+  .word { font-size: clamp(32px, 5.5vw, 54px); font-weight: 700; text-wrap: balance; line-height: 1.15; }
+  .pron { font-size: clamp(19px, 3vw, 30px); color: #f5b942; font-weight: 700; letter-spacing: .5px; }
+  .tapnote { font-size: clamp(13px, 1.7vw, 16px); color: rgba(247,243,236,.55); margin-top: 4px; }
+  .hook { font-size: clamp(20px, 3.2vw, 32px); font-weight: 700; line-height: 1.4; color: #1e2233; text-wrap: balance; }
+  .fact {
+    font-size: clamp(16px, 2.3vw, 23px); line-height: 1.5; color: #3b3529;
+    border-top: 2px dashed #cfc6b4; padding-top: clamp(8px, 1.5vh, 16px);
+  }
+  .saybtn {
+    font: inherit; font-weight: 800; font-size: clamp(16px, 2vw, 20px); cursor: pointer;
+    background: #232f52; color: #f7f3ec; border: 2px solid #39466f; border-radius: 999px;
+    padding: 12px 26px; min-height: 48px;
+  }
+  .back .saybtn { background: #fff; color: #1e2233; border-color: #cfc6b4; }
+  .row { display: flex; gap: 12px; margin-top: 16px; }
+  .btn {
+    font: inherit; font-size: clamp(18px, 2.5vw, 24px); font-weight: 800; cursor: pointer;
+    border: none; border-radius: 16px; padding: 18px 10px; color: #fff; flex: 1; min-height: 62px;
+  }
+  .again { background: #c75a38; box-shadow: 0 4px 0 #8f3517; }
+  .got { background: #2fa36b; box-shadow: 0 4px 0 #1d6b45; }
+  .win { display: none; text-align: center; padding: 40px 16px; }
+  .win .emoji { font-size: 72px; }
+  .win h2 { font-family: "Atkinson Hyperlegible", Inter, sans-serif; color: #f5b942; font-size: 28px; }
+  .win p { font-size: 18px; }
+  .resetbtn { font: inherit; font-weight: 800; font-size: 17px; cursor: pointer; background: #f5b942; color: #0f1729; border: none; border-radius: 14px; padding: 15px 26px; }
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="lockup"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
+  <rect width="640" height="640" rx="120" fill="#0F1729"/>
+  <g transform="translate(60,190) scale(0.494)">
+    <path fill="#F7F3EC" d="M915.61,342.15c-35.13,30.74-89.5,22.29-113.65-17.66L611.96,11.58c-4.36-7.19-12.17-11.58-20.59-11.58h-237.26l207.62,341.94-.24.21c-35.13,30.74-89.5,22.29-113.65-17.66L257.85,11.58c-4.36-7.19-12.17-11.58-20.59-11.58H0l346.93,571.37c19.95,32.86,67.83,32.34,87.05-.96l64.26-111.29,65.88-113.26,136.93,225.51c19.95,32.86,67.83,32.34,87.05-.96l64.26-111.29,72.99-125.48-9.73,8.51Z"/>
+    <path fill="#F5B942" d="M780,28 C850,2 895,12 912,46 C929,12 974,2 1044,28 L1044,196 C980,176 938,184 912,214 C886,184 844,176 780,196 Z"/>
+    <path stroke="#0F1729" stroke-width="16" fill="none" d="M912,52 L912,208"/>
+  </g>
+</svg><span class="wm">wasiendo</span><span class="desc">ACADEMY</span></div>
+  <h1>🃏 Flash Cards — the 13 to master</h1>
+  <p class="sub">Tap the card to flip · 🔊 says it out loud</p>
+</div>
+
+<div class="counts"><span class="left" id="left"></span> in the deck · <b id="done">0</b> mastered</div>
+
+<div class="stage" id="stage">
+  <div class="card" id="card">
+    <div class="face front">
+      <div class="emoji" id="f-emoji"></div>
+      <div class="word" id="f-word"></div>
+      <div class="pron" id="f-pron"></div>
+      <button class="saybtn" id="say1" type="button">🔊 say it</button>
+      <div class="tapnote">tap the card to flip ↻</div>
+    </div>
+    <div class="face back">
+      <div class="hook" id="b-hook"></div>
+      <div class="fact" id="b-fact"></div>
+      <button class="saybtn" id="say2" type="button">🔊 say it again</button>
+    </div>
+  </div>
+  <div class="row">
+    <button class="btn again" id="againbtn" type="button">🔁 AGAIN</button>
+    <button class="btn got" id="gotbtn" type="button">✓ GOT IT</button>
+  </div>
+</div>
+
+<div class="win" id="win">
+  <div class="emoji">🏆</div>
+  <h2>All 13 mastered!</h2>
+  <p>Every card earned a GOT IT. Run it once more tomorrow and they're yours for the test.</p>
+  <button class="resetbtn" id="resetbtn" type="button">Start the deck again</button>
+</div>
+
+<script>
+const CARDS = [{"e": "🚶", "w": "Homo erectus", "p": "HOH-moh ee-REK-tuss", "say": "Homo erectus", "hook": "E-RECT means stand UP. The UP-right Man stood up… and WALKED right out of Africa — the first ones ever! 🔥 Bonus: first to tame fire.", "fact": "“Upright Man” — the FIRST hominins to migrate out of Africa."}, {"e": "🎨", "w": "Homo sapiens", "p": "HOH-moh SAY-pee-enz", "say": "Homo sapiens", "hook": "SAPiens = the SAVVY ones. So wise they signed the walls!", "fact": "“Wise Man” — left paintings on cave walls to express themselves."}, {"e": "🐦", "w": "migrate", "p": "MY-grayt", "say": "migrate", "hook": "“MY GREAT move!” Birds migrate south every year — pack up, new region.", "fact": "To move from one geographic region to another."}, {"e": "🦴", "w": "Paleolithic", "p": "PAY-lee-oh-LITH-ik", "say": "Paleolithic", "hook": "PALEO = OLD-school, like your grand-PA. The OLD Stone Age comes FIRST.", "fact": "FIRST period of the Stone Age — about 2 million years ago to 8000 B.C.E. Twin-trick: Paleo = old · Neo = new."}, {"e": "🌱", "w": "Neolithic", "p": "NEE-oh-LITH-ik", "say": "Neolithic", "hook": "NEO = NEW, like a NEWborn. The NEW Stone Age comes LATER.", "fact": "LATER part of the Stone Age — about 8000 to 3000 B.C.E."}, {"e": "🔄", "w": "trade", "p": "TRAYD", "say": "trade", "hook": "Trading cards! Swap what you HAVE for what you WANT.", "fact": "The business of buying, selling, or exchanging items."}, {"e": "🌟", "w": "trait", "p": "TRAYT", "say": "trait", "hook": "Your TRAdemark — curly hair, fast feet, big laugh.", "fact": "A special feature or characteristic."}, {"e": "🥔", "w": "Mesopotamia", "p": "MESS-uh-puh-TAY-mee-uh", "say": "Mesopotamia", "hook": "A MESS o’ POTATOES spilled between two rivers!", "fact": "“The land BETWEEN the rivers” — the Tigris and the Euphrates."}, {"e": "📐", "w": "cuneiform", "p": "kyoo-NEE-uh-form", "say": "cuneiform", "hook": "Writing made of little WEDGES — pizza-slice marks pressed into wet clay.", "fact": "Writing that uses wedge-shaped characters."}, {"e": "🏙️", "w": "civilization", "p": "siv-uh-luh-ZAY-shun", "say": "civilization", "hook": "The whole CITY package — everything a society BUILDS.", "fact": "A society with developed arts, sciences, government, and social structure. Twin-trick: civilization = the machine…"}, {"e": "🎭", "w": "culture", "p": "KUL-chur", "say": "culture", "hook": "…and CULTURE = the heartbeat inside it: what people BELIEVE and how they BEHAVE.", "fact": "The beliefs and behaviors of a society or group of people."}, {"e": "🧱", "w": "the Fertile Crescent problem", "p": "FER-tul KRESS-ent", "say": "Fertile Crescent", "hook": "Amazing dirt… NO hardware store! Missing: Stone, Wood, Metal.", "fact": "Great farmland, but it LACKED stone, wood, and metal — so people built with mud bricks and TRADED for the rest."}, {"e": "💧", "w": "why rivers?", "p": "", "say": "Why did civilizations grow near water?", "hook": "A river is the ancient superstore: DRINK it, FARM with it, FISH in it, RIDE it to trade.", "fact": "Early civilizations grew near water for drinking, farming, fishing, and travel for trade."}];
+let deck = CARDS.map((_, i) => i);
+let mastered = 0;
+const card = document.getElementById('card');
+
+function speak(text) {
+  try {
+    if (!('speechSynthesis' in window)) return;
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.rate = 0.85;
+    speechSynthesis.speak(u);
+  } catch (e) {}
+}
+if (!('speechSynthesis' in window)) {
+  document.getElementById('say1').hidden = true;
+  document.getElementById('say2').hidden = true;
+}
+
+function render() {
+  document.getElementById('left').textContent = deck.length;
+  document.getElementById('done').textContent = mastered;
+  if (deck.length === 0) {
+    document.getElementById('stage').style.display = 'none';
+    document.getElementById('win').style.display = 'block';
+    return;
+  }
+  document.getElementById('stage').style.display = 'flex';
+  document.getElementById('win').style.display = 'none';
+  const c = CARDS[deck[0]];
+  card.classList.remove('flipped');
+  document.getElementById('f-emoji').textContent = c.e;
+  document.getElementById('f-word').textContent = c.w;
+  document.getElementById('f-pron').textContent = c.p;
+  document.getElementById('f-pron').style.display = c.p ? '' : 'none';
+  document.getElementById('b-hook').textContent = c.hook;
+  document.getElementById('b-fact').textContent = c.fact;
+}
+
+card.addEventListener('click', (ev) => {
+  if (ev.target.classList.contains('saybtn')) return;
+  card.classList.toggle('flipped');
+});
+document.getElementById('say1').addEventListener('click', () => speak(CARDS[deck[0]].say));
+document.getElementById('say2').addEventListener('click', () => speak(CARDS[deck[0]].say));
+document.getElementById('againbtn').addEventListener('click', () => {
+  deck.push(deck.shift());
+  render();
+});
+document.getElementById('gotbtn').addEventListener('click', () => {
+  deck.shift(); mastered++;
+  render();
+});
+document.getElementById('resetbtn').addEventListener('click', () => {
+  deck = CARDS.map((_, i) => i); mastered = 0; render();
+});
+render();
+</script>
+
+</body></html>

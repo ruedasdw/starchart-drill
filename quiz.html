@@ -1,0 +1,515 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Early Humans &amp; Mesopotamia — Test Prep</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Inter:wght@400;600;700;800&display=swap">
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: Inter, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    background: #0f1729; color: #f7f3ec; padding: 0 16px 60px;
+  }
+  h1, h2, .wm { font-family: "Atkinson Hyperlegible", Inter, Arial, sans-serif; }
+  .top {
+    position: sticky; top: 0; z-index: 5; background: #0f1729; color: #f7f3ec;
+    margin: 0 -16px 14px; padding: 10px 18px 12px;
+    border-bottom: 1px solid #232f52;
+  }
+  .lockup { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .lockup svg { width: 30px; height: 30px; border-radius: 8px; flex: none; }
+  .wm { font-weight: 700; font-size: 17px; letter-spacing: .2px; }
+  .desc { font-size: 10.5px; letter-spacing: 3px; color: #f5b942; font-weight: 700; margin-top: 3px; }
+  .top h1 { font-size: 18px; margin: 0 0 2px; font-weight: 700; }
+  .top .prog { font-size: 12.5px; color: rgba(247,243,236,.7); }
+  .bar { height: 7px; background: #232f52; border-radius: 999px; margin-top: 7px; overflow: hidden; }
+  .bar > div { height: 100%; width: 0%; background: #f5b942; transition: width .25s; border-radius: 999px; }
+  .sec { font-size: 18px; margin: 26px 2px 10px; color: #f5b942; }
+  .qcard {
+    background: #161f3a; border: 2px solid #2a3558; border-radius: 16px;
+    padding: 12px 14px; margin-bottom: 12px;
+  }
+  .qcard.right { border-color: #4cc98f; }
+  .qcard.wrong { border-color: #ed8360; background: #1d1e33; }
+  .qhead { font-size: 15.5px; font-weight: 700; margin-bottom: 9px; }
+  .qn {
+    display: inline-block; background: #f5b942; color: #0f1729; border-radius: 8px;
+    padding: 1px 8px; font-size: 13px; margin-right: 5px; font-variant-numeric: tabular-nums;
+  }
+  .mark { font-size: 15px; }
+  .qcard.wrong .mark::after { content: "look again!"; color: #ed8360; font-size: 13px; font-weight: 800; }
+  .qcard.right .mark::after { content: "✓"; color: #4cc98f; font-weight: 800; }
+  .opts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  @media (max-width: 480px) { .opts { grid-template-columns: 1fr; } }
+  .opt {
+    font: inherit; font-size: 14.5px; text-align: left; cursor: pointer;
+    background: #232f52; border: 2px solid #39466f; border-radius: 12px;
+    padding: 10px 12px; color: #f7f3ec;
+    box-shadow: 0 2px 0 #0a101f;
+  }
+  .opt.sel { background: #f7f3ec; color: #0f1729; border-color: #f7f3ec; font-weight: 700; }
+  .opt.showright { outline: 3px solid #4cc98f; background: #12301f; color: #f7f3ec; font-weight: 700; }
+  .opt.sel.showright { background: #4cc98f; color: #0f1729; }
+  .revealbox {
+    margin-top: 9px; border-top: 1.5px dashed #39466f; padding-top: 8px;
+    font-size: 13.5px; color: #4cc98f; font-weight: 600;
+  }
+  .checkzone { text-align: center; margin: 26px 0 10px; }
+  .bigbtn {
+    font: inherit; font-size: 18px; font-weight: 800; cursor: pointer;
+    background: #2fa36b; color: #fff; border: none; border-radius: 14px;
+    padding: 14px 34px; box-shadow: 0 3px 0 #1d6b45;
+  }
+  .score { font-size: 17px; font-weight: 800; margin-top: 12px; }
+  .score .flagged { color: #ed8360; }
+  .parent {
+    margin-top: 34px; border-radius: 16px;
+    background: #f7f3ec; color: #1e2233; padding: 14px 16px;
+  }
+  .parent h2 { font-size: 16px; margin: 0 0 7px; color: #1e2233; }
+  .parent input {
+    font: inherit; font-size: 16px; padding: 9px 12px; border: 2px solid #cfc6b4;
+    border-radius: 10px; width: 130px; background: #fff; color: #1e2233;
+  }
+  .parent button {
+    font: inherit; font-size: 15px; font-weight: 800; cursor: pointer;
+    background: #f5b942; color: #0f1729; border: none; border-radius: 10px;
+    padding: 10px 18px; margin-left: 6px; box-shadow: 0 2px 0 #b9861f;
+  }
+  .pwmsg { font-size: 13.5px; margin-top: 7px; color: #c75a38; font-weight: 700; }
+  .reviewlist { font-size: 14px; margin-top: 9px; }
+</style></head>
+<body>
+  <div class="top">
+    <div class="lockup"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
+  <rect width="640" height="640" rx="120" fill="#0F1729"/>
+  <g transform="translate(60,190) scale(0.494)">
+    <path fill="#F7F3EC" d="M915.61,342.15c-35.13,30.74-89.5,22.29-113.65-17.66L611.96,11.58c-4.36-7.19-12.17-11.58-20.59-11.58h-237.26l207.62,341.94-.24.21c-35.13,30.74-89.5,22.29-113.65-17.66L257.85,11.58c-4.36-7.19-12.17-11.58-20.59-11.58H0l346.93,571.37c19.95,32.86,67.83,32.34,87.05-.96l64.26-111.29,65.88-113.26,136.93,225.51c19.95,32.86,67.83,32.34,87.05-.96l64.26-111.29,72.99-125.48-9.73,8.51Z"/>
+    <path fill="#F5B942" d="M780,28 C850,2 895,12 912,46 C929,12 974,2 1044,28 L1044,196 C980,176 938,184 912,214 C886,184 844,176 780,196 Z"/>
+    <path stroke="#0F1729" stroke-width="16" fill="none" d="M912,52 L912,208"/>
+  </g>
+</svg><span class="wm">wasiendo</span><span class="desc">ACADEMY</span></div>
+    <h1>Early Humans &amp; Mesopotamia — Test Prep</h1>
+    <div class="prog"><span id="done">0</span> of 54 answered · tap one answer per question, then hit CHECK at the bottom</div>
+    <div class="bar"><div id="barfill"></div></div>
+  </div>
+
+<h2 class="sec">🦴 Part 1 · Early Hominins</h2>
+<div class="qcard" id="q1" data-n="1">
+      <div class="qhead"><span class="qn">1</span> <span class="qp">Which hominin group is called “Handy Man” and made the first tools?</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q1" data-i="0">Homo erectus</button><button class="opt" data-q="q1" data-i="1">Neanderthals</button><button class="opt" data-q="q1" data-i="2">Homo sapiens</button><button class="opt" data-q="q1" data-i="3">Homo habilis</button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<div class="qcard" id="q2" data-n="2">
+      <div class="qhead"><span class="qn">2</span> <span class="qp">“Upright Man” — the FIRST hominins to migrate out of Africa — were the…</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q2" data-i="0">Homo habilis</button><button class="opt" data-q="q2" data-i="1">Homo sapiens</button><button class="opt" data-q="q2" data-i="2">Neanderthals</button><button class="opt" data-q="q2" data-i="3">Homo erectus</button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<div class="qcard" id="q3" data-n="3">
+      <div class="qhead"><span class="qn">3</span> <span class="qp">Which group was known for being smart and becoming skilled tool makers?</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q3" data-i="0">Homo erectus</button><button class="opt" data-q="q3" data-i="1">Neanderthals</button><button class="opt" data-q="q3" data-i="2">Homo sapiens</button><button class="opt" data-q="q3" data-i="3">Homo habilis</button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<div class="qcard" id="q4" data-n="4">
+      <div class="qhead"><span class="qn">4</span> <span class="qp">Which group left paintings on cave walls to express themselves?</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q4" data-i="0">Homo habilis</button><button class="opt" data-q="q4" data-i="1">Homo erectus</button><button class="opt" data-q="q4" data-i="2">Homo sapiens</button><button class="opt" data-q="q4" data-i="3">Neanderthals</button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<div class="qcard" id="q5" data-n="5">
+      <div class="qhead"><span class="qn">5</span> <span class="qp">“Wise Man” is the nickname for…</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q5" data-i="0">Homo habilis</button><button class="opt" data-q="q5" data-i="1">Homo sapiens</button><button class="opt" data-q="q5" data-i="2">Homo erectus</button><button class="opt" data-q="q5" data-i="3">Neanderthals</button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<div class="qcard" id="q6" data-n="6">
+      <div class="qhead"><span class="qn">6</span> <span class="qp">Which group was the FIRST to control fire?</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q6" data-i="0">Upright Man (Homo erectus)</button><button class="opt" data-q="q6" data-i="1">Handy Man (Homo habilis)</button><button class="opt" data-q="q6" data-i="2">Neanderthals</button><button class="opt" data-q="q6" data-i="3">Wise Man (Homo sapiens)</button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<div class="qcard" id="q7" data-n="7">
+      <div class="qhead"><span class="qn">7</span> <span class="qp">How did the first tools help hominins survive?</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q7" data-i="0">They used them to hunt animals</button><button class="opt" data-q="q7" data-i="1">They used them to build ziggurats</button><button class="opt" data-q="q7" data-i="2">They used them to paint caves</button><button class="opt" data-q="q7" data-i="3">They used them to plant crops</button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<h2 class="sec">🪨 Part 2 · Stone Age Words</h2>
+<div class="qcard" id="q8" data-n="8">
+      <div class="qhead"><span class="qn">8</span> <span class="qp">An early ancestor of humans</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q8" data-i="0">Nomad</button><button class="opt" data-q="q8" data-i="1">Hominin</button><button class="opt" data-q="q8" data-i="2">Anthropologist</button><button class="opt" data-q="q8" data-i="3">Trait</button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<div class="qcard" id="q9" data-n="9">
+      <div class="qhead"><span class="qn">9</span> <span class="qp">To move from one geographic region to another</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q9" data-i="0">Nomad</button><button class="opt" data-q="q9" data-i="1">Migrate</button><button class="opt" data-q="q9" data-i="2">Trade</button><button class="opt" data-q="q9" data-i="3">Domesticate</button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<div class="qcard" id="q10" data-n="10">
+      <div class="qhead"><span class="qn">10</span> <span class="qp">The business of farming — growing crops and raising animals</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q10" data-i="0">Agriculture</button><button class="opt" data-q="q10" data-i="1">Economy</button><button class="opt" data-q="q10" data-i="2">Resource</button><button class="opt" data-q="q10" data-i="3">Trade</button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<div class="qcard" id="q11" data-n="11">
+      <div class="qhead"><span class="qn">11</span> <span class="qp">To train a wild animal to be useful to humans</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q11" data-i="0">Domesticate</button><button class="opt" data-q="q11" data-i="1">Hominin</button><button class="opt" data-q="q11" data-i="2">Migrate</button><button class="opt" data-q="q11" data-i="3">Agriculture</button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<div class="qcard" id="q12" data-n="12">
+      <div class="qhead"><span class="qn">12</span> <span class="qp">Someone who moves from place to place with no permanent home</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q12" data-i="0">Anthropologist</button><button class="opt" data-q="q12" data-i="1">Merchant</button><button class="opt" data-q="q12" data-i="2">Scribe</button><button class="opt" data-q="q12" data-i="3">Nomad</button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<div class="qcard" id="q13" data-n="13">
+      <div class="qhead"><span class="qn">13</span> <span class="qp">Something that can be used to fulfill a need</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q13" data-i="0">Trade</button><button class="opt" data-q="q13" data-i="1">Resource</button><button class="opt" data-q="q13" data-i="2">Capital</button><button class="opt" data-q="q13" data-i="3">Tribute</button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<div class="qcard" id="q14" data-n="14">
+      <div class="qhead"><span class="qn">14</span> <span class="qp">The FIRST period of the Stone Age — about 2 million years ago to about 8000 B.C.E.</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q14" data-i="0">Neolithic age</button><button class="opt" data-q="q14" data-i="1">Çatalhöyük</button><button class="opt" data-q="q14" data-i="2">Paleolithic age</button><button class="opt" data-q="q14" data-i="3">Fertile Crescent</button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<div class="qcard" id="q15" data-n="15">
+      <div class="qhead"><span class="qn">15</span> <span class="qp">The LATER part of the Stone Age — about 8000 to 3000 B.C.E.</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q15" data-i="0">Mesopotamia</button><button class="opt" data-q="q15" data-i="1">Fertile Crescent</button><button class="opt" data-q="q15" data-i="2">Paleolithic age</button><button class="opt" data-q="q15" data-i="3">Neolithic age</button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<div class="qcard" id="q16" data-n="16">
+      <div class="qhead"><span class="qn">16</span> <span class="qp">An arc-shaped region in southwest Asia with rich soil</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q16" data-i="0">Mesopotamia</button><button class="opt" data-q="q16" data-i="1">Çatalhöyük</button><button class="opt" data-q="q16" data-i="2">Sumer</button><button class="opt" data-q="q16" data-i="3">Fertile Crescent</button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<div class="qcard" id="q17" data-n="17">
+      <div class="qhead"><span class="qn">17</span> <span class="qp">A Neolithic town discovered in central Turkey</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q17" data-i="0">Fertile Crescent</button><button class="opt" data-q="q17" data-i="1">Çatalhöyük</button><button class="opt" data-q="q17" data-i="2">Mesopotamia</button><button class="opt" data-q="q17" data-i="3">Sumer</button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<div class="qcard" id="q18" data-n="18">
+      <div class="qhead"><span class="qn">18</span> <span class="qp">A scientist who studies human development</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q18" data-i="0">Anthropologist</button><button class="opt" data-q="q18" data-i="1">Merchant</button><button class="opt" data-q="q18" data-i="2">Artisan</button><button class="opt" data-q="q18" data-i="3">Scribe</button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<div class="qcard" id="q19" data-n="19">
+      <div class="qhead"><span class="qn">19</span> <span class="qp">A group of people who live in the same area and are united by common interests</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q19" data-i="0">Civilization</button><button class="opt" data-q="q19" data-i="1">Community</button><button class="opt" data-q="q19" data-i="2">Culture</button><button class="opt" data-q="q19" data-i="3">City-state</button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<div class="qcard" id="q20" data-n="20">
+      <div class="qhead"><span class="qn">20</span> <span class="qp">The business of buying, selling, or exchanging items</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q20" data-i="0">Agriculture</button><button class="opt" data-q="q20" data-i="1">Trade</button><button class="opt" data-q="q20" data-i="2">Economy</button><button class="opt" data-q="q20" data-i="3">Tribute</button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<div class="qcard" id="q21" data-n="21">
+      <div class="qhead"><span class="qn">21</span> <span class="qp">The ability to reason and gain knowledge</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q21" data-i="0">Trait</button><button class="opt" data-q="q21" data-i="1">Culture</button><button class="opt" data-q="q21" data-i="2">Technology</button><button class="opt" data-q="q21" data-i="3">Intelligence</button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<div class="qcard" id="q22" data-n="22">
+      <div class="qhead"><span class="qn">22</span> <span class="qp">A special feature or characteristic</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q22" data-i="0">Culture</button><button class="opt" data-q="q22" data-i="1">Pictograph</button><button class="opt" data-q="q22" data-i="2">Resource</button><button class="opt" data-q="q22" data-i="3">Trait</button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<h2 class="sec">🏺 Part 3 · Mesopotamia Words</h2>
+<div class="qcard" id="q23" data-n="23">
+      <div class="qhead"><span class="qn">23</span> <span class="qp">The land located between the Tigris and Euphrates rivers</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q23" data-i="0">Sumer</button><button class="opt" data-q="q23" data-i="1">Mesopotamia</button><button class="opt" data-q="q23" data-i="2">Çatalhöyük</button><button class="opt" data-q="q23" data-i="3">Fertile Crescent</button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<div class="qcard" id="q24" data-n="24">
+      <div class="qhead"><span class="qn">24</span> <span class="qp">The area in southern Mesopotamia where cities FIRST appeared</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q24" data-i="0">Sumer</button><button class="opt" data-q="q24" data-i="1">Çatalhöyük</button><button class="opt" data-q="q24" data-i="2">Fertile Crescent</button><button class="opt" data-q="q24" data-i="3">City-state</button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<div class="qcard" id="q25" data-n="25">
+      <div class="qhead"><span class="qn">25</span> <span class="qp">An early city that was like an independent country, with its own laws and government</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q25" data-i="0">Civilization</button><button class="opt" data-q="q25" data-i="1">Capital</button><button class="opt" data-q="q25" data-i="2">City-state</button><button class="opt" data-q="q25" data-i="3">Empire</button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<div class="qcard" id="q26" data-n="26">
+      <div class="qhead"><span class="qn">26</span> <span class="qp">A means of supplying land with water</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q26" data-i="0">Trade</button><button class="opt" data-q="q26" data-i="1">Agriculture</button><button class="opt" data-q="q26" data-i="2">Resource</button><button class="opt" data-q="q26" data-i="3">Irrigation</button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<div class="qcard" id="q27" data-n="27">
+      <div class="qhead"><span class="qn">27</span> <span class="qp">Writing that uses wedge-shaped characters</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q27" data-i="0">Scribe</button><button class="opt" data-q="q27" data-i="1">Cuneiform</button><button class="opt" data-q="q27" data-i="2">Pictograph</button><button class="opt" data-q="q27" data-i="3">Code of laws</button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<div class="qcard" id="q28" data-n="28">
+      <div class="qhead"><span class="qn">28</span> <span class="qp">A symbol that stands for an object</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q28" data-i="0">Trait</button><button class="opt" data-q="q28" data-i="1">Ziggurat</button><button class="opt" data-q="q28" data-i="2">Pictograph</button><button class="opt" data-q="q28" data-i="3">Cuneiform</button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<div class="qcard" id="q29" data-n="29">
+      <div class="qhead"><span class="qn">29</span> <span class="qp">An ancient Mesopotamian temple tower with an outside staircase and a shrine at the top</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q29" data-i="0">City-state</button><button class="opt" data-q="q29" data-i="1">Ziggurat</button><button class="opt" data-q="q29" data-i="2">Capital</button><button class="opt" data-q="q29" data-i="3">Empire</button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<div class="qcard" id="q30" data-n="30">
+      <div class="qhead"><span class="qn">30</span> <span class="qp">A large territory in which several groups of people are ruled by a single leader or government</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q30" data-i="0">City-state</button><button class="opt" data-q="q30" data-i="1">Empire</button><button class="opt" data-q="q30" data-i="2">Community</button><button class="opt" data-q="q30" data-i="3">Civilization</button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<div class="qcard" id="q31" data-n="31">
+      <div class="qhead"><span class="qn">31</span> <span class="qp">A military blockade and attack on a city to force it to surrender</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q31" data-i="0">Siege</button><button class="opt" data-q="q31" data-i="1">Trade</button><button class="opt" data-q="q31" data-i="2">Tribute</button><button class="opt" data-q="q31" data-i="3">Code of laws</button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<div class="qcard" id="q32" data-n="32">
+      <div class="qhead"><span class="qn">32</span> <span class="qp">Wealth sent from one country or ruler to another as a sign that the other is superior</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q32" data-i="0">Tribute</button><button class="opt" data-q="q32" data-i="1">Resource</button><button class="opt" data-q="q32" data-i="2">Trade</button><button class="opt" data-q="q32" data-i="3">Economy</button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<div class="qcard" id="q33" data-n="33">
+      <div class="qhead"><span class="qn">33</span> <span class="qp">A person who makes money by selling goods</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q33" data-i="0">Nomad</button><button class="opt" data-q="q33" data-i="1">Artisan</button><button class="opt" data-q="q33" data-i="2">Merchant</button><button class="opt" data-q="q33" data-i="3">Scribe</button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<div class="qcard" id="q34" data-n="34">
+      <div class="qhead"><span class="qn">34</span> <span class="qp">The way a civilization is organized</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q34" data-i="0">Culture</button><button class="opt" data-q="q34" data-i="1">Economy</button><button class="opt" data-q="q34" data-i="2">Social structure</button><button class="opt" data-q="q34" data-i="3">Technology</button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<div class="qcard" id="q35" data-n="35">
+      <div class="qhead"><span class="qn">35</span> <span class="qp">A collection of written laws and rules</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q35" data-i="0">Economy</button><button class="opt" data-q="q35" data-i="1">Code of laws</button><button class="opt" data-q="q35" data-i="2">Social structure</button><button class="opt" data-q="q35" data-i="3">Tribute</button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<div class="qcard" id="q36" data-n="36">
+      <div class="qhead"><span class="qn">36</span> <span class="qp">A city that is the center of government</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q36" data-i="0">Ziggurat</button><button class="opt" data-q="q36" data-i="1">City-state</button><button class="opt" data-q="q36" data-i="2">Capital</button><button class="opt" data-q="q36" data-i="3">Empire</button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<div class="qcard" id="q37" data-n="37">
+      <div class="qhead"><span class="qn">37</span> <span class="qp">The way a region or country uses resources to produce, sell, and trade goods and services</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q37" data-i="0">Resource</button><button class="opt" data-q="q37" data-i="1">Economy</button><button class="opt" data-q="q37" data-i="2">Agriculture</button><button class="opt" data-q="q37" data-i="3">Trade</button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<div class="qcard" id="q38" data-n="38">
+      <div class="qhead"><span class="qn">38</span> <span class="qp">A society marked by developed arts, sciences, government, and social structure</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q38" data-i="0">Civilization</button><button class="opt" data-q="q38" data-i="1">Empire</button><button class="opt" data-q="q38" data-i="2">Culture</button><button class="opt" data-q="q38" data-i="3">Community</button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<div class="qcard" id="q39" data-n="39">
+      <div class="qhead"><span class="qn">39</span> <span class="qp">The beliefs and behaviors of a society or group of people</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q39" data-i="0">Culture</button><button class="opt" data-q="q39" data-i="1">Trait</button><button class="opt" data-q="q39" data-i="2">Social structure</button><button class="opt" data-q="q39" data-i="3">Civilization</button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<div class="qcard" id="q40" data-n="40">
+      <div class="qhead"><span class="qn">40</span> <span class="qp">A craftsperson</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q40" data-i="0">Anthropologist</button><button class="opt" data-q="q40" data-i="1">Merchant</button><button class="opt" data-q="q40" data-i="2">Artisan</button><button class="opt" data-q="q40" data-i="3">Scribe</button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<div class="qcard" id="q41" data-n="41">
+      <div class="qhead"><span class="qn">41</span> <span class="qp">The use of tools and other inventions for practical purposes</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q41" data-i="0">Cuneiform</button><button class="opt" data-q="q41" data-i="1">Economy</button><button class="opt" data-q="q41" data-i="2">Technology</button><button class="opt" data-q="q41" data-i="3">Irrigation</button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<div class="qcard" id="q42" data-n="42">
+      <div class="qhead"><span class="qn">42</span> <span class="qp">A person who writes</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q42" data-i="0">Merchant</button><button class="opt" data-q="q42" data-i="1">Scribe</button><button class="opt" data-q="q42" data-i="2">Artisan</button><button class="opt" data-q="q42" data-i="3">Anthropologist</button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<h2 class="sec">🗺️ Part 4 · Geography Challenge</h2>
+<div class="qcard" id="q43" data-n="43">
+      <div class="qhead"><span class="qn">43</span> <span class="qp">Which continent lies to the NORTH of Africa?</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q43" data-i="0">Europe</button><button class="opt" data-q="q43" data-i="1">Asia</button><button class="opt" data-q="q43" data-i="2">South America</button><button class="opt" data-q="q43" data-i="3">Australia</button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<div class="qcard" id="q44" data-n="44">
+      <div class="qhead"><span class="qn">44</span> <span class="qp">Which continent lies to the NORTHEAST of Africa?</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q44" data-i="0">North America</button><button class="opt" data-q="q44" data-i="1">Asia</button><button class="opt" data-q="q44" data-i="2">Antarctica</button><button class="opt" data-q="q44" data-i="3">Europe</button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<div class="qcard" id="q45" data-n="45">
+      <div class="qhead"><span class="qn">45</span> <span class="qp">The Nile River flows north into which body of water?</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q45" data-i="0">Red Sea</button><button class="opt" data-q="q45" data-i="1">Persian Gulf</button><button class="opt" data-q="q45" data-i="2">Atlantic Ocean</button><button class="opt" data-q="q45" data-i="3">Mediterranean Sea</button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<div class="qcard" id="q46" data-n="46">
+      <div class="qhead"><span class="qn">46</span> <span class="qp">Which two rivers run through the Fertile Crescent?</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q46" data-i="0">Jordan and Nile</button><button class="opt" data-q="q46" data-i="1">Nile and Niger</button><button class="opt" data-q="q46" data-i="2">Tigris and Euphrates</button><button class="opt" data-q="q46" data-i="3">Indus and Ganges</button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<div class="qcard" id="q47" data-n="47">
+      <div class="qhead"><span class="qn">47</span> <span class="qp">The body of water off the NORTH coast of Africa is the…</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q47" data-i="0">Red Sea</button><button class="opt" data-q="q47" data-i="1">Mediterranean Sea</button><button class="opt" data-q="q47" data-i="2">Indian Ocean</button><button class="opt" data-q="q47" data-i="3">Atlantic Ocean</button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<div class="qcard" id="q48" data-n="48">
+      <div class="qhead"><span class="qn">48</span> <span class="qp">The body of water off the EAST coast of Africa is the…</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q48" data-i="0">Mediterranean Sea</button><button class="opt" data-q="q48" data-i="1">Indian Ocean</button><button class="opt" data-q="q48" data-i="2">Atlantic Ocean</button><button class="opt" data-q="q48" data-i="3">Caspian Sea</button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<div class="qcard" id="q49" data-n="49">
+      <div class="qhead"><span class="qn">49</span> <span class="qp">The Great Rift Valley in East Africa is famous for…</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q49" data-i="0">the first farms</button><button class="opt" data-q="q49" data-i="1">cuneiform tablets</button><button class="opt" data-q="q49" data-i="2">early human fossil discoveries</button><button class="opt" data-q="q49" data-i="3">the first ziggurats</button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<div class="qcard" id="q50" data-n="50">
+      <div class="qhead"><span class="qn">50</span> <span class="qp">The huge desert that covers most of North Africa is the…</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q50" data-i="0">Mojave</button><button class="opt" data-q="q50" data-i="1">Gobi</button><button class="opt" data-q="q50" data-i="2">Sahara</button><button class="opt" data-q="q50" data-i="3">Arabian Desert</button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<div class="qcard" id="q51" data-n="51">
+      <div class="qhead"><span class="qn">51</span> <span class="qp">Most of North Africa and the Middle East is desert. How did that affect where early people settled?</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q51" data-i="0">They built cities in the open desert</button><button class="opt" data-q="q51" data-i="1">They spread out evenly across the desert</button><button class="opt" data-q="q51" data-i="2">They settled near rivers and oases, where there was water</button><button class="opt" data-q="q51" data-i="3">They stayed away from rivers</button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<div class="qcard" id="q52" data-n="52">
+      <div class="qhead"><span class="qn">52</span> <span class="qp">Why did early humans migrate EAST to the Fertile Crescent instead of north to Europe?</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q52" data-i="0">Europe was already full of cities</button><button class="opt" data-q="q52" data-i="1">The Fertile Crescent had fewer rivers</button><button class="opt" data-q="q52" data-i="2">The east had water, rich soil, and a land route — the sea and cold mountains blocked the way north</button><button class="opt" data-q="q52" data-i="3">They wanted to cross the Atlantic</button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<div class="qcard" id="q53" data-n="53">
+      <div class="qhead"><span class="qn">53</span> <span class="qp">The Fertile Crescent had rich farmland but LACKED which resources?</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q53" data-i="0">Fish and grain</button><button class="opt" data-q="q53" data-i="1">Stone, wood, and metal</button><button class="opt" data-q="q53" data-i="2">Mud and clay</button><button class="opt" data-q="q53" data-i="3">Water and soil</button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<div class="qcard" id="q54" data-n="54">
+      <div class="qhead"><span class="qn">54</span> <span class="qp">Why did most early civilizations develop near a water supply?</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q54" data-i="0">To stay cool in summer</button><button class="opt" data-q="q54" data-i="1">Deserts were too crowded</button><button class="opt" data-q="q54" data-i="2">Water made stronger walls</button><button class="opt" data-q="q54" data-i="3">Drinking water, farming, fishing, and travel for trade</button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+
+  <div class="checkzone">
+    <button class="bigbtn" id="checkbtn">CHECK MY ANSWERS ✔</button>
+    <div class="score" id="scoreline"></div>
+  </div>
+
+  <div class="parent">
+    <h2>🔒 Parent zone — answer key</h2>
+    <div>Enter the password to reveal the correct answers:
+      <input type="password" id="pw" inputmode="numeric" autocomplete="off">
+      <button id="unlock">Unlock</button>
+    </div>
+    <div class="pwmsg" id="pwmsg"></div>
+    <div class="reviewlist" id="reviewlist"></div>
+  </div>
+
+<script>
+
+function sha256Bytes(msgBytes){
+  const K=[0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,
+  0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,
+  0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,
+  0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,
+  0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,
+  0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,
+  0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,
+  0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2];
+  let H=[0x6a09e667,0xbb67ae85,0x3c6ef372,0xa54ff53a,0x510e527f,0x9b05688c,0x1f83d9ab,0x5be0cd19];
+  const l=msgBytes.length, bitLen=l*8;
+  const padded=new Uint8Array(((l+9+63)>>6)<<6);
+  padded.set(msgBytes); padded[l]=0x80;
+  const dv=new DataView(padded.buffer);
+  dv.setUint32(padded.length-8, Math.floor(bitLen/4294967296));
+  dv.setUint32(padded.length-4, bitLen>>>0);
+  const w=new Int32Array(64);
+  const rotr=(x,n)=>(x>>>n)|(x<<(32-n));
+  for(let i=0;i<padded.length;i+=64){
+    for(let t=0;t<16;t++) w[t]=dv.getInt32(i+t*4);
+    for(let t=16;t<64;t++){
+      const s0=rotr(w[t-15],7)^rotr(w[t-15],18)^(w[t-15]>>>3);
+      const s1=rotr(w[t-2],17)^rotr(w[t-2],19)^(w[t-2]>>>10);
+      w[t]=(w[t-16]+s0+w[t-7]+s1)|0;
+    }
+    let[a,b,c,d,e,f,g,h]=H;
+    for(let t=0;t<64;t++){
+      const S1=rotr(e,6)^rotr(e,11)^rotr(e,25);
+      const ch=(e&f)^(~e&g);
+      const t1=(h+S1+ch+K[t]+w[t])|0;
+      const S0=rotr(a,2)^rotr(a,13)^rotr(a,22);
+      const maj=(a&b)^(a&c)^(b&c);
+      const t2=(S0+maj)|0;
+      h=g;g=f;f=e;e=(d+t1)|0;d=c;c=b;b=a;a=(t1+t2)|0;
+    }
+    H=[ (H[0]+a)|0,(H[1]+b)|0,(H[2]+c)|0,(H[3]+d)|0,(H[4]+e)|0,(H[5]+f)|0,(H[6]+g)|0,(H[7]+h)|0 ];
+  }
+  const out=new Uint8Array(32); const ov=new DataView(out.buffer);
+  for(let i=0;i<8;i++) ov.setInt32(i*4,H[i]);
+  return out;
+}
+function utf8(s){ return new TextEncoder().encode(s); }
+function hex(bytes){ return Array.from(bytes).map(b=>b.toString(16).padStart(2,'0')).join(''); }
+function shaHex(s){ return hex(sha256Bytes(utf8(s))); }
+function b64ToBytes(b64){ const bin=atob(b64); const a=new Uint8Array(bin.length); for(let i=0;i<bin.length;i++)a[i]=bin.charCodeAt(i); return a; }
+function decryptReveal(b64, pw, salt, magic){
+  const enc=b64ToBytes(b64);
+  const out=new Uint8Array(enc.length);
+  let blk=0, off=0;
+  while(off<enc.length){
+    const ks=sha256Bytes(utf8(pw+'|'+salt+'|'+blk));
+    for(let i=0;i<32 && off<enc.length;i++,off++) out[off]=enc[off]^ks[i];
+    blk++;
+  }
+  let text;
+  try{ text=new TextDecoder('utf-8',{fatal:true}).decode(out); }catch(e){ return null; }
+  if(!text.startsWith(magic)) return null;
+  try{ return JSON.parse(text.slice(magic.length)); }catch(e){ return null; }
+}
+
+const SALT = "wasiendo-ss-2026-09-25";
+const MAGIC = "OK!";
+const GRADE = {"q1": "81ae0b6ce8fcca38341aab09a9523f668c289583aa591a3a796e1299cf2eadbb", "q2": "f260dc9a58b4f615a5fe2b4d2a3b5614c8b4f840898e0a9f3a431c60c6bfb6d7", "q3": "2feab622fc9ddba96b865054a9e4874d504789852d533e32309c6cc08df325b5", "q4": "2c03d5be7849643c2001fbb19f60a90b161c340fea4f4976a9bf21dbbe99482e", "q5": "1ba2f73b88bb400d479458c27e26a7c33b500eb733093956d650aad9b93a83f5", "q6": "2c798362bac1df7ca7e4a509f3dc2ffa38ed10d6c0cc750e997d8eb30d494bda", "q7": "3081e50a3b04d81eddeaf9166468ca7cf661f3b5151d8f6656ceb84a3933f20b", "q8": "68124dccf5df66677b2a3f3d6bb08ba95d3d01743605460ca9e7e151918c4c2f", "q9": "f7468c6915da551913fc66373fcbbbabc74d7c8de31c6fac9959383238753e2d", "q10": "ec72668210592796c6b409e176cb0cd619d5c733e8c5df1202c2a83bfb50c90d", "q11": "c2cfea7415b92aebb0b0235e4513847ceb2ebe31ef32f3e6dc3859819955c08d", "q12": "0569536158a02814d140c72eeab8d91c56f4a5356ac200bc03d5d1e7c9621b63", "q13": "cdb17958210f701bbd7e4f9b468c7141e1cbbd57ec30f52d7413c92da68ab497", "q14": "32bbda4939c59160b524773c334fd51cd9c5edea183d9357b3b866f11af0853d", "q15": "534b573aa3c07ece0be7d07c8ef55971bacdb2bb4ebe629bd8780564dab13186", "q16": "bbab7b102af1841ebedfd6874a2a85d20d91d3769c31225b3d629081ee423b85", "q17": "5b42364584f886d2c78ae9321488f704088543e5df393a189b33c9b8274749e6", "q18": "870ae9892e14c475d993116c2ba5d6e15ea7e87314a71ec4b18966007e089ca8", "q19": "a382fe1e582b824e3986e3b486e8be0123ea4e0f0d09dd48b433370fd0da913c", "q20": "d1e327999dc534a651e65c71c7920c39d9e4f63e78290e1d001ba1959e5e266e", "q21": "9ca104bb79c9a52b2e04e42d0f38033b53f9e3f67367598b3766592d0025a532", "q22": "594991fa93f95960cf00be460e19dc1d73468a28d75e034baedcdb705cdafefb", "q23": "a44624d3949df22c849d4b4e4a3f0e6a0f9dccd9e0627933da2f32073859ac22", "q24": "fdb7f71740a3138fa291de06cb61b2ae74e11d62562dc405844dc922bc363db9", "q25": "2c00dad2b85dcb152c902bc942b6de6f880a273b6a632b397374a0d8afa9a46f", "q26": "2118b40e4973bb16d8bf254fa7638d9112c61ff4e071a415e421ec9f9aade40d", "q27": "85592adaee33cf89c7ed92e2eaa78e1fd7ab8730aff505a29660ec5fb3d54dad", "q28": "62b995f2ba61fc0c9c2b3dff6130ef0abedbc2fa207117e06e22e33c155a2e3f", "q29": "8c8755dbec971c4dd4a23133893291129220acef62e8101d886dc39f882bcfae", "q30": "bb1808caab5329a13c38f432429a84672c104b477071dad93cca106b84a33be5", "q31": "31487b90dd490c1a12e9b296e347743b9696a9410b08d8a26ec21fc3479f9547", "q32": "030b24c58989ac82b8a1babd418659b9b84247cb1f6c332f28fa2178cb17c073", "q33": "de1d4627e151f08b9eaa458952e81b8db5f6f186d4ecdbad8dcba2525a0d3df5", "q34": "6ac8fd434120947a2d99b92b700776cd3b944f1f19bc4c2e399df155cc31f2d8", "q35": "db65d1f1eb89d253ed1d4b556462455fc22d74fc9b9a539ca30ed1b0efec6060", "q36": "841b686c99a9e0f0acdcdf8d22b081f7db111001322f27899c88c380d8368994", "q37": "011aa41f4538d84b98163b19a73f6fc8d4eaf72cb2385b616a95e3167e4a71b4", "q38": "7d2880373b7514744d1d080f89648b77dcc9b59c23fb6f83bb6060fea2a7dc46", "q39": "9d4019b2f894a4d66f79271fc0db2bdceea96fb232268bf268b35ece58e148c1", "q40": "2e3150c7d574606dd2840c1aa6a8193cdfb337c823d2eaddc7f752edafb0cca4", "q41": "56cfd9d9ef454601fc9d50919d936da11f36dd058d0650a4dcbcb4e0dbf79d84", "q42": "94e29d4a6dc36aafd122325fc6f0b684840133e1e9e6df1bd6153d2b12792c1f", "q43": "de730f0e506a7f08197cdf0702322b717e56a7e74278230e463c7350e4d779ba", "q44": "7e06694548a76076cc4562110b07f5aef334122a46d9e378f2e0f2631ac7c3b1", "q45": "12b0318994890da03910187ff94ab1a103ffe56263b3dafc774f78b6c7dc70f4", "q46": "2b9d741003dc15940cfac4efc9b87270622002b4aa98d720cf979fe8a377f372", "q47": "5d75920c3d6142c20a3e4715a422e714a7db57449b04036e69a5e10963875dde", "q48": "e19b15801ffbf5943336bfa4be3787848dd348f560a52297b9a4ffb406a1d7c0", "q49": "2eb5b376a088e5556104b0459516682f29e04aaf0b5dea42fb0c0d214273fa2b", "q50": "6bd05ee6eb0c6ff8306e680b05abdec869099310288089c7e148d46dfd69ce45", "q51": "d9911efd111ae796cd473a2bcb2e2e017f28540ff0e4e72b39a47d7e4961df0e", "q52": "0dfb716dc572301f4ca9bab1a96d1a2f1ac4d870ffddd722da73b3320cb2f502", "q53": "f78be709f292d1ab5b17bd0e4aac317e1b4ea0b00ede35901bf9b3b1a44ff7d1", "q54": "0200cddd8e3012c04f14f109e436e83d0315298e06f06b7df9fc5f6c4e4b510d"};
+const ENC = "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";
+const NQ = 54;
+const picks = {};
+let locked = false;
+
+document.querySelectorAll('.opt').forEach(btn => {
+  btn.addEventListener('click', () => {
+    if (locked) return;
+    const q = btn.dataset.q;
+    picks[q] = parseInt(btn.dataset.i, 10);
+    const card = document.getElementById(q);
+    card.querySelectorAll('.opt').forEach(o => o.classList.remove('sel'));
+    btn.classList.add('sel');
+    card.classList.remove('right', 'wrong');
+    const done = Object.keys(picks).length;
+    document.getElementById('done').textContent = done;
+    document.getElementById('barfill').style.width = (100 * done / NQ) + '%';
+  });
+});
+
+document.getElementById('checkbtn').addEventListener('click', () => {
+  let right = 0, wrong = 0, unanswered = 0;
+  document.querySelectorAll('.qcard').forEach(card => {
+    const q = card.id;
+    card.classList.remove('right', 'wrong');
+    if (!(q in picks)) { unanswered++; return; }
+    const h = shaHex(q + '|' + picks[q] + '|' + SALT);
+    if (h === GRADE[q]) { card.classList.add('right'); right++; }
+    else { card.classList.add('wrong'); wrong++; }
+  });
+  let msg = '⭐ ' + right + ' right';
+  if (wrong) msg += ' · <span class="flagged">' + wrong + ' flagged — scroll up, look again, and CHECK again!</span>';
+  if (unanswered) msg += ' · ' + unanswered + ' not answered yet';
+  if (!wrong && !unanswered) msg = '🏆 ALL ' + right + ' RIGHT — you are ready for this test!';
+  document.getElementById('scoreline').innerHTML = msg;
+  const firstWrong = document.querySelector('.qcard.wrong');
+  if (firstWrong) firstWrong.scrollIntoView({ behavior: 'smooth', block: 'center' });
+});
+
+document.getElementById('unlock').addEventListener('click', () => {
+  const pw = document.getElementById('pw').value.trim();
+  const data = decryptReveal(ENC, pw, SALT, MAGIC);
+  const msgEl = document.getElementById('pwmsg');
+  if (!data) { msgEl.textContent = 'Wrong password.'; return; }
+  msgEl.textContent = '';
+  locked = true;
+  const flaggedNames = [];
+  document.querySelectorAll('.qcard').forEach(card => {
+    const q = card.id, info = data[q];
+    const opts = card.querySelectorAll('.opt');
+    opts[info.a].classList.add('showright');
+    const box = card.querySelector('.revealbox');
+    box.hidden = false;
+    box.textContent = '✔ ' + opts[info.a].textContent + (info.n ? ' — ' + info.n : '');
+    if (card.classList.contains('wrong') || !(q in picks)) {
+      flaggedNames.push('#' + card.dataset.n);
+    }
+  });
+  document.getElementById('reviewlist').innerHTML = flaggedNames.length
+    ? '<b>Review together:</b> ' + flaggedNames.join(', ')
+    : '<b>Nothing left to review — she got them all.</b>';
+});
+</script>
+</body></html>
