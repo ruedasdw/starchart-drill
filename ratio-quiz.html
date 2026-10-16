@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ratios Test Drive</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Inter:wght@400;600;700;800&display=swap">
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: Inter, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    background: #0f1729; color: #f7f3ec; padding: 0 16px 60px;
+  }
+  h1, h2, .wm { font-family: "Atkinson Hyperlegible", Inter, Arial, sans-serif; }
+  .top {
+    position: sticky; top: 0; z-index: 5; background: #0f1729; color: #f7f3ec;
+    margin: 0 -16px 14px; padding: 10px 18px 12px;
+    border-bottom: 1px solid #232f52;
+  }
+  .lockup { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .lockup svg { width: 30px; height: 30px; border-radius: 8px; flex: none; }
+  .wm { font-weight: 700; font-size: 17px; letter-spacing: .2px; }
+  .desc { font-size: 10.5px; letter-spacing: 3px; color: #f5b942; font-weight: 700; margin-top: 3px; }
+  .top h1 { font-size: 18px; margin: 0 0 2px; font-weight: 700; }
+  .top .prog { font-size: 12.5px; color: rgba(247,243,236,.7); }
+  .bar { height: 7px; background: #232f52; border-radius: 999px; margin-top: 7px; overflow: hidden; }
+  .bar > div { height: 100%; width: 0%; background: #f5b942; transition: width .25s; border-radius: 999px; }
+  .sec { font-size: 18px; margin: 26px 2px 10px; color: #f5b942; }
+  .qcard {
+    background: #161f3a; border: 2px solid #2a3558; border-radius: 16px;
+    padding: 12px 14px; margin-bottom: 12px;
+  }
+  .qcard.right { border-color: #4cc98f; }
+  .qcard.wrong { border-color: #ed8360; background: #1d1e33; }
+  .qhead { font-size: 15.5px; font-weight: 700; margin-bottom: 9px; }
+  .qn {
+    display: inline-block; background: #f5b942; color: #0f1729; border-radius: 8px;
+    padding: 1px 8px; font-size: 13px; margin-right: 5px; font-variant-numeric: tabular-nums;
+  }
+  .mark { font-size: 15px; }
+  .qcard.wrong .mark::after { content: "look again!"; color: #ed8360; font-size: 13px; font-weight: 800; }
+  .qcard.right .mark::after { content: "✓"; color: #4cc98f; font-weight: 800; }
+  .opts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  @media (max-width: 480px) { .opts { grid-template-columns: 1fr; } }
+  .opt {
+    font: inherit; font-size: 14.5px; text-align: left; cursor: pointer;
+    background: #232f52; border: 2px solid #39466f; border-radius: 12px;
+    padding: 10px 12px; color: #f7f3ec;
+    box-shadow: 0 2px 0 #0a101f;
+  }
+  .opt.sel { background: #f7f3ec; color: #0f1729; border-color: #f7f3ec; font-weight: 700; }
+  .opt.showright { outline: 3px solid #4cc98f; background: #12301f; color: #f7f3ec; font-weight: 700; }
+  .opt.sel.showright { background: #4cc98f; color: #0f1729; }
+  .revealbox {
+    margin-top: 9px; border-top: 1.5px dashed #39466f; padding-top: 8px;
+    font-size: 13.5px; color: #4cc98f; font-weight: 600;
+  }
+  .checkzone { text-align: center; margin: 26px 0 10px; }
+  .bigbtn {
+    font: inherit; font-size: 18px; font-weight: 800; cursor: pointer;
+    background: #2fa36b; color: #fff; border: none; border-radius: 14px;
+    padding: 14px 34px; box-shadow: 0 3px 0 #1d6b45;
+  }
+  .score { font-size: 17px; font-weight: 800; margin-top: 12px; }
+  .score .flagged { color: #ed8360; }
+  .parent {
+    margin-top: 34px; border-radius: 16px;
+    background: #f7f3ec; color: #1e2233; padding: 14px 16px;
+  }
+  .parent h2 { font-size: 16px; margin: 0 0 7px; color: #1e2233; }
+  .parent input {
+    font: inherit; font-size: 16px; padding: 9px 12px; border: 2px solid #cfc6b4;
+    border-radius: 10px; width: 130px; background: #fff; color: #1e2233;
+  }
+  .parent button {
+    font: inherit; font-size: 15px; font-weight: 800; cursor: pointer;
+    background: #f5b942; color: #0f1729; border: none; border-radius: 10px;
+    padding: 10px 18px; margin-left: 6px; box-shadow: 0 2px 0 #b9861f;
+  }
+  .pwmsg { font-size: 13.5px; margin-top: 7px; color: #c75a38; font-weight: 700; }
+  .reviewlist { font-size: 14px; margin-top: 9px; }
+
+  .fr { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; line-height: 1.05; margin: 0 .08em; font-size: .92em; }
+  .fr .den { border-top: .09em solid currentColor; }
+  .opt { font-size: 16px; min-height: 52px; }
+  .opt .fr { font-size: 1.02em; }
+  .qhead { font-size: 16.5px; line-height: 1.45; }
+  .symq { font-size: 28px; letter-spacing: 2px; margin-top: 6px; color: #f5b942; }
+  table.qt { border-collapse: collapse; margin-top: 8px; font-size: 15px; font-weight: 600; }
+  table.qt th, table.qt td { border: 1.5px solid #39466f; padding: 3px 14px; }
+  table.qt th { color: #f5b942; font-size: 13px; }
+  table.qt td:last-child { text-align: center; }
+  .intro { background: #161f3a; border: 2px dashed #f5b942; border-radius: 14px; padding: 10px 14px; font-size: 15px; line-height: 1.45; margin-bottom: 4px; }
+  .intro b { color: #f5b942; }
+</style></head>
+<body>
+  <div class="top">
+    <div class="lockup"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
+  <rect width="640" height="640" rx="120" fill="#0F1729"/>
+  <g transform="translate(60,190) scale(0.494)">
+    <path fill="#F7F3EC" d="M915.61,342.15c-35.13,30.74-89.5,22.29-113.65-17.66L611.96,11.58c-4.36-7.19-12.17-11.58-20.59-11.58h-237.26l207.62,341.94-.24.21c-35.13,30.74-89.5,22.29-113.65-17.66L257.85,11.58c-4.36-7.19-12.17-11.58-20.59-11.58H0l346.93,571.37c19.95,32.86,67.83,32.34,87.05-.96l64.26-111.29,65.88-113.26,136.93,225.51c19.95,32.86,67.83,32.34,87.05-.96l64.26-111.29,72.99-125.48-9.73,8.51Z"/>
+    <path fill="#F5B942" d="M780,28 C850,2 895,12 912,46 C929,12 974,2 1044,28 L1044,196 C980,176 938,184 912,214 C886,184 844,176 780,196 Z"/>
+    <path stroke="#0F1729" stroke-width="16" fill="none" d="M912,52 L912,208"/>
+  </g>
+</svg><span class="wm">wasiendo</span><span class="desc">ACADEMY</span></div>
+    <h1>Ratios &amp; Unit Rates — Test Drive</h1>
+    <div class="prog"><span id="done">0</span> of 22 answered · tap one answer per question, then hit CHECK at the bottom</div>
+    <div class="bar"><div id="barfill"></div></div>
+  </div>
+  <div class="intro"><b>Test drive = like the real test.</b> No cards, no hints. Use scratch paper and your box method. All new numbers.</div>
+<h2 class="sec">🔢 Part 1 · Ratios</h2>
+<div class="qcard" id="q1" data-n="1">
+      <div class="qhead"><span class="qn">1</span> <span class="qp">What is the ratio 12 to 54 as a fraction in simplest form?</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q1" data-i="0"><span class="fr"><span class="num">12</span><span class="den">54</span></span></button><button class="opt" data-q="q1" data-i="1"><span class="fr"><span class="num">4</span><span class="den">18</span></span></button><button class="opt" data-q="q1" data-i="2"><span class="fr"><span class="num">9</span><span class="den">2</span></span></button><button class="opt" data-q="q1" data-i="3"><span class="fr"><span class="num">2</span><span class="den">9</span></span></button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<div class="qcard" id="q2" data-n="2">
+      <div class="qhead"><span class="qn">2</span> <span class="qp">What is the ratio of stars to circles?<div class='symq'>★ ● ★ ★ ● ★ ● ★ ★ ●</div></span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q2" data-i="0">3 : 2</button><button class="opt" data-q="q2" data-i="1">2 : 3</button><button class="opt" data-q="q2" data-i="2">2 : 5</button><button class="opt" data-q="q2" data-i="3">3 : 5</button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<div class="qcard" id="q3" data-n="3">
+      <div class="qhead"><span class="qn">3</span> <span class="qp">Write the ratio 5 : 8 in two other forms.</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q3" data-i="0">5 to 8, <span class="fr"><span class="num">8</span><span class="den">5</span></span></button><button class="opt" data-q="q3" data-i="1">5 to 8, <span class="fr"><span class="num">5</span><span class="den">8</span></span></button><button class="opt" data-q="q3" data-i="2">8 to 5, <span class="fr"><span class="num">5</span><span class="den">8</span></span></button><button class="opt" data-q="q3" data-i="3">8 to 5, <span class="fr"><span class="num">8</span><span class="den">5</span></span></button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<div class="qcard" id="q4" data-n="4">
+      <div class="qhead"><span class="qn">4</span> <span class="qp">Write the ratio 3 to 27 as a fraction in simplest form.</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q4" data-i="0"><span class="fr"><span class="num">3</span><span class="den">27</span></span></button><button class="opt" data-q="q4" data-i="1"><span class="fr"><span class="num">1</span><span class="den">9</span></span></button><button class="opt" data-q="q4" data-i="2"><span class="fr"><span class="num">1</span><span class="den">8</span></span></button><button class="opt" data-q="q4" data-i="3"><span class="fr"><span class="num">9</span><span class="den">1</span></span></button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<div class="qcard" id="q5" data-n="5">
+      <div class="qhead"><span class="qn">5</span> <span class="qp">A town has 360 bikes for every 1000 people. Which shows bikes to people as a fraction in simplest form?</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q5" data-i="0"><span class="fr"><span class="num">9</span><span class="den">25</span></span></button><button class="opt" data-q="q5" data-i="1"><span class="fr"><span class="num">9</span><span class="den">50</span></span></button><button class="opt" data-q="q5" data-i="2"><span class="fr"><span class="num">18</span><span class="den">25</span></span></button><button class="opt" data-q="q5" data-i="3"><span class="fr"><span class="num">36</span><span class="den">100</span></span></button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<div class="qcard" id="q6" data-n="6">
+      <div class="qhead"><span class="qn">6</span> <span class="qp">Dana read 24 pages. Eli read 30 pages. What is the ratio of Dana's pages to Eli's pages?</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q6" data-i="0"><span class="fr"><span class="num">5</span><span class="den">4</span></span></button><button class="opt" data-q="q6" data-i="1"><span class="fr"><span class="num">5</span><span class="den">9</span></span></button><button class="opt" data-q="q6" data-i="2"><span class="fr"><span class="num">4</span><span class="den">9</span></span></button><button class="opt" data-q="q6" data-i="3"><span class="fr"><span class="num">4</span><span class="den">5</span></span></button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<div class="qcard" id="q7" data-n="7">
+      <div class="qhead"><span class="qn">7</span> <span class="qp">Use the table to write the ratio of grapes to pears.<table class='qt'><tr><th>Fruit</th><th>Number in basket</th></tr><tr><td>Apples</td><td>14</td></tr><tr><td>Bananas</td><td>9</td></tr><tr><td>Grapes</td><td>23</td></tr><tr><td>Pears</td><td>8</td></tr></table></span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q7" data-i="0">8 : 23</button><button class="opt" data-q="q7" data-i="1">23 : 54</button><button class="opt" data-q="q7" data-i="2">23 : 8</button><button class="opt" data-q="q7" data-i="3">54 : 8</button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<div class="qcard" id="q8" data-n="8">
+      <div class="qhead"><span class="qn">8</span> <span class="qp">Use the table to write the ratio of the TOTAL number of shirts to the number of red shirts.<table class='qt'><tr><th>Shirt color</th><th>Number of shirts</th></tr><tr><td>Blue</td><td>18</td></tr><tr><td>Red</td><td>7</td></tr><tr><td>White</td><td>25</td></tr><tr><td>Black</td><td>3</td></tr></table></span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q8" data-i="0">53 : 7</button><button class="opt" data-q="q8" data-i="1">7 : 53</button><button class="opt" data-q="q8" data-i="2">46 : 7</button><button class="opt" data-q="q8" data-i="3">25 : 7</button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<div class="qcard" id="q9" data-n="9">
+      <div class="qhead"><span class="qn">9</span> <span class="qp">A swimmer did 42 laps on Monday and 35 laps on Tuesday. What is the ratio of Monday's laps to Tuesday's laps?</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q9" data-i="0">7 to 6</button><button class="opt" data-q="q9" data-i="1">35 to 42</button><button class="opt" data-q="q9" data-i="2">6 to 5</button><button class="opt" data-q="q9" data-i="3">5 to 6</button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<div class="qcard" id="q10" data-n="10">
+      <div class="qhead"><span class="qn">10</span> <span class="qp">A club has 36 girls and 45 boys. Write the ratio of girls to boys in all three forms.</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q10" data-i="0"><span class="fr"><span class="num">5</span><span class="den">9</span></span>, 5 to 9, 5 : 9</button><button class="opt" data-q="q10" data-i="1"><span class="fr"><span class="num">4</span><span class="den">9</span></span>, 4 to 9, 4 : 9</button><button class="opt" data-q="q10" data-i="2"><span class="fr"><span class="num">4</span><span class="den">5</span></span>, 4 to 5, 4 : 5</button><button class="opt" data-q="q10" data-i="3"><span class="fr"><span class="num">5</span><span class="den">4</span></span>, 5 to 4, 5 : 4</button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<div class="qcard" id="q11" data-n="11">
+      <div class="qhead"><span class="qn">11</span> <span class="qp">A farm has 16 ducks and 40 hens. Write the ratio of ducks to hens in all three forms.</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q11" data-i="0"><span class="fr"><span class="num">2</span><span class="den">7</span></span>, 2 to 7, 2 : 7</button><button class="opt" data-q="q11" data-i="1"><span class="fr"><span class="num">5</span><span class="den">2</span></span>, 5 to 2, 5 : 2</button><button class="opt" data-q="q11" data-i="2"><span class="fr"><span class="num">2</span><span class="den">5</span></span>, 2 to 5, 2 : 5</button><button class="opt" data-q="q11" data-i="3"><span class="fr"><span class="num">5</span><span class="den">7</span></span>, 5 to 7, 5 : 7</button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<div class="qcard" id="q12" data-n="12">
+      <div class="qhead"><span class="qn">12</span> <span class="qp">A school has 132 students and 12 teachers. Write the ratio of students to teachers in simplest form.</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q12" data-i="0">132 to 12</button><button class="opt" data-q="q12" data-i="1">11 to 1</button><button class="opt" data-q="q12" data-i="2">12 to 132</button><button class="opt" data-q="q12" data-i="3">1 to 11</button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<h2 class="sec">🚗 Part 2 · Unit Rates</h2>
+<div class="qcard" id="q13" data-n="13">
+      <div class="qhead"><span class="qn">13</span> <span class="qp">Find the unit rate: 744 km in 6 h.</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q13" data-i="0"><span class="fr"><span class="num">124 km</span><span class="den">h</span></span></button><button class="opt" data-q="q13" data-i="1"><span class="fr"><span class="num">126 km</span><span class="den">h</span></span></button><button class="opt" data-q="q13" data-i="2"><span class="fr"><span class="num">122 km</span><span class="den">h</span></span></button><button class="opt" data-q="q13" data-i="3"><span class="fr"><span class="num">134 km</span><span class="den">h</span></span></button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<div class="qcard" id="q14" data-n="14">
+      <div class="qhead"><span class="qn">14</span> <span class="qp">Juice boxes come in 4-packs for $5.00 and 10-packs for $11.50. Which is the better deal? What is the price per box of the better deal?</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q14" data-i="0">4-pack at $1.25 per box</button><button class="opt" data-q="q14" data-i="1">10-pack at $1.25 per box</button><button class="opt" data-q="q14" data-i="2">10-pack at $1.15 per box</button><button class="opt" data-q="q14" data-i="3">4-pack at $1.15 per box</button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<div class="qcard" id="q15" data-n="15">
+      <div class="qhead"><span class="qn">15</span> <span class="qp">Find the unit rate. A family paid $378 for 6 nights at a cabin.</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q15" data-i="0"><span class="fr"><span class="num">$68</span><span class="den">1 night</span></span></button><button class="opt" data-q="q15" data-i="1"><span class="fr"><span class="num">$73</span><span class="den">1 night</span></span></button><button class="opt" data-q="q15" data-i="2"><span class="fr"><span class="num">$62</span><span class="den">1 night</span></span></button><button class="opt" data-q="q15" data-i="3"><span class="fr"><span class="num">$63</span><span class="den">1 night</span></span></button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<div class="qcard" id="q16" data-n="16">
+      <div class="qhead"><span class="qn">16</span> <span class="qp">Kim read 18 pages in 24 minutes. Lou read 20 pages in 25 minutes. Who read more pages per minute?</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q16" data-i="0">Lou</button><button class="opt" data-q="q16" data-i="1">Kim</button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<div class="qcard" id="q17" data-n="17">
+      <div class="qhead"><span class="qn">17</span> <span class="qp">4 granola bars have 368 calories in all. How many calories are in 1 bar?</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q17" data-i="0">94 calories</button><button class="opt" data-q="q17" data-i="1">92 calories</button><button class="opt" data-q="q17" data-i="2">82 calories</button><button class="opt" data-q="q17" data-i="3">96 calories</button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<div class="qcard" id="q18" data-n="18">
+      <div class="qhead"><span class="qn">18</span> <span class="qp">A bus drives 245 miles in 5 hours. What is its average speed in miles per hour?</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q18" data-i="0">49 miles per hour</button><button class="opt" data-q="q18" data-i="1">51 miles per hour</button><button class="opt" data-q="q18" data-i="2">59 miles per hour</button><button class="opt" data-q="q18" data-i="3">45 miles per hour</button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<div class="qcard" id="q19" data-n="19">
+      <div class="qhead"><span class="qn">19</span> <span class="qp">A runner runs 84 miles in one week. How many miles does she run in one day on average?</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q19" data-i="0">14 miles</button><button class="opt" data-q="q19" data-i="1">77 miles</button><button class="opt" data-q="q19" data-i="2">21 miles</button><button class="opt" data-q="q19" data-i="3">12 miles</button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<h2 class="sec">⚖️ Part 3 · Proportional & Converting</h2>
+<div class="qcard" id="q20" data-n="20">
+      <div class="qhead"><span class="qn">20</span> <span class="qp">Are the ratios <span class="fr"><span class="num">4</span><span class="den">10</span></span> and <span class="fr"><span class="num">10</span><span class="den">25</span></span> proportional?</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q20" data-i="0">not proportional</button><button class="opt" data-q="q20" data-i="1">proportional</button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<div class="qcard" id="q21" data-n="21">
+      <div class="qhead"><span class="qn">21</span> <span class="qp">Are the ratios <span class="fr"><span class="num">3</span><span class="den">8</span></span> and <span class="fr"><span class="num">9</span><span class="den">32</span></span> proportional?</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q21" data-i="0">not proportional</button><button class="opt" data-q="q21" data-i="1">proportional</button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+<div class="qcard" id="q22" data-n="22">
+      <div class="qhead"><span class="qn">22</span> <span class="qp">Convert 540 in. to feet.</span> <span class="mark"></span></div>
+      <div class="opts"><button class="opt" data-q="q22" data-i="0">54 feet</button><button class="opt" data-q="q22" data-i="1">45 feet</button><button class="opt" data-q="q22" data-i="2">42 feet</button><button class="opt" data-q="q22" data-i="3">6,480 feet</button></div>
+      <div class="revealbox" hidden></div>
+    </div>
+
+  <div class="checkzone">
+    <button class="bigbtn" id="checkbtn">CHECK MY ANSWERS ✔</button>
+    <div class="score" id="scoreline"></div>
+  </div>
+
+  <div class="parent">
+    <h2>🔒 Parent zone — answer key</h2>
+    <div>Enter the password to reveal the correct answers:
+      <input type="password" id="pw" inputmode="numeric" autocomplete="off">
+      <button id="unlock">Unlock</button>
+    </div>
+    <div class="pwmsg" id="pwmsg"></div>
+    <div class="reviewlist" id="reviewlist"></div>
+  </div>
+
+<script>
+
+
+function sha256Bytes(msgBytes){
+  const K=[0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,
+  0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,
+  0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,
+  0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,
+  0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,
+  0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,
+  0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,
+  0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2];
+  let H=[0x6a09e667,0xbb67ae85,0x3c6ef372,0xa54ff53a,0x510e527f,0x9b05688c,0x1f83d9ab,0x5be0cd19];
+  const l=msgBytes.length, bitLen=l*8;
+  const padded=new Uint8Array(((l+9+63)>>6)<<6);
+  padded.set(msgBytes); padded[l]=0x80;
+  const dv=new DataView(padded.buffer);
+  dv.setUint32(padded.length-8, Math.floor(bitLen/4294967296));
+  dv.setUint32(padded.length-4, bitLen>>>0);
+  const w=new Int32Array(64);
+  const rotr=(x,n)=>(x>>>n)|(x<<(32-n));
+  for(let i=0;i<padded.length;i+=64){
+    for(let t=0;t<16;t++) w[t]=dv.getInt32(i+t*4);
+    for(let t=16;t<64;t++){
+      const s0=rotr(w[t-15],7)^rotr(w[t-15],18)^(w[t-15]>>>3);
+      const s1=rotr(w[t-2],17)^rotr(w[t-2],19)^(w[t-2]>>>10);
+      w[t]=(w[t-16]+s0+w[t-7]+s1)|0;
+    }
+    let[a,b,c,d,e,f,g,h]=H;
+    for(let t=0;t<64;t++){
+      const S1=rotr(e,6)^rotr(e,11)^rotr(e,25);
+      const ch=(e&f)^(~e&g);
+      const t1=(h+S1+ch+K[t]+w[t])|0;
+      const S0=rotr(a,2)^rotr(a,13)^rotr(a,22);
+      const maj=(a&b)^(a&c)^(b&c);
+      const t2=(S0+maj)|0;
+      h=g;g=f;f=e;e=(d+t1)|0;d=c;c=b;b=a;a=(t1+t2)|0;
+    }
+    H=[ (H[0]+a)|0,(H[1]+b)|0,(H[2]+c)|0,(H[3]+d)|0,(H[4]+e)|0,(H[5]+f)|0,(H[6]+g)|0,(H[7]+h)|0 ];
+  }
+  const out=new Uint8Array(32); const ov=new DataView(out.buffer);
+  for(let i=0;i<8;i++) ov.setInt32(i*4,H[i]);
+  return out;
+}
+function utf8(s){ return new TextEncoder().encode(s); }
+function hex(bytes){ return Array.from(bytes).map(b=>b.toString(16).padStart(2,'0')).join(''); }
+function shaHex(s){ return hex(sha256Bytes(utf8(s))); }
+function b64ToBytes(b64){ const bin=atob(b64); const a=new Uint8Array(bin.length); for(let i=0;i<bin.length;i++)a[i]=bin.charCodeAt(i); return a; }
+function decryptReveal(b64, pw, salt, magic){
+  const enc=b64ToBytes(b64);
+  const out=new Uint8Array(enc.length);
+  let blk=0, off=0;
+  while(off<enc.length){
+    const ks=sha256Bytes(utf8(pw+'|'+salt+'|'+blk));
+    for(let i=0;i<32 && off<enc.length;i++,off++) out[off]=enc[off]^ks[i];
+    blk++;
+  }
+  let text;
+  try{ text=new TextDecoder('utf-8',{fatal:true}).decode(out); }catch(e){ return null; }
+  if(!text.startsWith(magic)) return null;
+  try{ return JSON.parse(text.slice(magic.length)); }catch(e){ return null; }
+}
+
+
+const SALT = "wasiendo-ratios-2026-10-16";
+const MAGIC = "OK!";
+const GRADE = {"q1": "9298cbf2b40d09d8fbb8c676b940264877e7e3cf9d2cb93dfe22f2a2e7d4f268", "q2": "f8190aafee7548e1298fe42b03986c37a19b2479a89920842b2ae498c41dac0e", "q3": "6d52d611af57cfe6a42f5be7ae2b5d77967907c0bfb379160c731edf0a2ddcd8", "q4": "dde844e4fb9ec32d761ca5d8ce2e0547e5dc18116f7938dd493836713a2dae8b", "q5": "5a8d65390893fdf3ec6f0f94ec594902cff99e61c6b3ac71dc891340b17313f4", "q6": "54dcef008bdd0472b270822e8e67702554407838c9476ffb59d7e516808c8b54", "q7": "35f14ff7dab9a295d1d6007da4b9dd36c0c1e4e76c0aa47ecd59ff490aec0670", "q8": "c7785e88f0e8d1c2016f990ca166e61e168059be3f50d215d8d06c22ba4b6a7b", "q9": "cb33e43a612d4c0fd5f04d0dd861a460f336124e00d4eba332c5bed0a59160da", "q10": "b14635afffc9daa9aebebe589c8f335b923f779339dcca20f5cc810a19881746", "q11": "c53fda03d90ddf97fb3109583e4d5d57f023b0de54c171b620e4b3e8070a13c0", "q12": "89916ceea577143ac413f7507f9077b9be084b224e8508ba1c59d4ac91ff4329", "q13": "0436a5ce50e1c119cd0889bb224140304a28804c7d77678d4cef9c7e7fda4b21", "q14": "8e67c408c2ba19f3f75053ecb89f03a7b3ac622ffe90e68485bd30dd6ba7db66", "q15": "b934bcb18383d191709b56e9e5f950b79b217e7384e2af109c31a8e548db71b6", "q16": "3fa2c12dd22cabce7cb530c2cbe6c9b45b4d48277e3c08af0e823fb082a20437", "q17": "57b873a602ee352f07c645e555f9bc51760c78b312bc9eae36da7e03090d15ba", "q18": "0cb6df017d749f02d514d00598908ec73b1d096f1f46dc06f5abbcb810447de8", "q19": "ffbd5107574b115b4b54e4a0cd4e9605dcad8cdab8724ab39a7122e97dd4ac40", "q20": "128a24b7c8f669f4c63c8257401ca4fd4b9a4932fd6fa12ba42b2302b4af3921", "q21": "f16291aa6f8ffd167ba77f8b11d55a57d4d6b9f161d47d8e159da23a41bf3544", "q22": "844a9929ba0e714088103d8b7fec51e5d122373943f07e7799ebf3a09b58d2a8"};
+const ENC = "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";
+const NQ = 22;
+const picks = {};
+let locked = false;
+
+document.querySelectorAll('.opt').forEach(btn => {
+  btn.addEventListener('click', () => {
+    if (locked) return;
+    const q = btn.dataset.q;
+    picks[q] = parseInt(btn.dataset.i, 10);
+    const card = document.getElementById(q);
+    card.querySelectorAll('.opt').forEach(o => o.classList.remove('sel'));
+    btn.classList.add('sel');
+    card.classList.remove('right', 'wrong');
+    const done = Object.keys(picks).length;
+    document.getElementById('done').textContent = done;
+    document.getElementById('barfill').style.width = (100 * done / NQ) + '%';
+  });
+});
+
+document.getElementById('checkbtn').addEventListener('click', () => {
+  let right = 0, wrong = 0, unanswered = 0;
+  document.querySelectorAll('.qcard').forEach(card => {
+    const q = card.id;
+    card.classList.remove('right', 'wrong');
+    if (!(q in picks)) { unanswered++; return; }
+    const h = shaHex(q + '|' + picks[q] + '|' + SALT);
+    if (h === GRADE[q]) { card.classList.add('right'); right++; }
+    else { card.classList.add('wrong'); wrong++; }
+  });
+  let msg = '⭐ ' + right + ' right';
+  if (wrong) msg += ' · <span class="flagged">' + wrong + ' flagged — scroll up, look again, and CHECK again!</span>';
+  if (unanswered) msg += ' · ' + unanswered + ' not answered yet';
+  if (!wrong && !unanswered) msg = '🏆 ALL ' + right + ' RIGHT — you are ready for the ratio test!';
+  document.getElementById('scoreline').innerHTML = msg;
+  const firstWrong = document.querySelector('.qcard.wrong');
+  if (firstWrong) firstWrong.scrollIntoView({ behavior: 'smooth', block: 'center' });
+});
+
+document.getElementById('unlock').addEventListener('click', () => {
+  const pw = document.getElementById('pw').value.trim();
+  const data = decryptReveal(ENC, pw, SALT, MAGIC);
+  const msgEl = document.getElementById('pwmsg');
+  if (!data) { msgEl.textContent = 'Wrong password.'; return; }
+  msgEl.textContent = '';
+  locked = true;
+  const flaggedNames = [];
+  document.querySelectorAll('.qcard').forEach(card => {
+    const q = card.id, info = data[q];
+    const opts = card.querySelectorAll('.opt');
+    opts[info.a].classList.add('showright');
+    const box = card.querySelector('.revealbox');
+    box.hidden = false;
+    box.innerHTML = '✔ ' + opts[info.a].innerHTML + (info.n ? ' — ' + info.n : '');
+    if (card.classList.contains('wrong') || !(q in picks)) {
+      flaggedNames.push('#' + card.dataset.n);
+    }
+  });
+  document.getElementById('reviewlist').innerHTML = flaggedNames.length
+    ? '<b>Review together:</b> ' + flaggedNames.join(', ')
+    : '<b>Nothing left to review — she got them all.</b>';
+});
+
+</script>
+</body></html>
