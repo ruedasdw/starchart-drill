@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ratio Flash Cards</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Inter:wght@400;600;700;800&display=swap">
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; }
+  body { font-family: Inter, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; background: #0f1729; color: #f7f3ec; margin: 0; padding: 0 16px; display: flex; flex-direction: column; }
+  h1, .wm, .q, .ans { font-family: "Atkinson Hyperlegible", Inter, Arial, sans-serif; }
+  button, .card { touch-action: manipulation; -webkit-user-select: none; user-select: none; }
+  .top { padding: 12px 2px 0; }
+  .lockup { display: flex; align-items: center; gap: 8px; }
+  .lockup svg { width: 30px; height: 30px; border-radius: 8px; flex: none; }
+  .wm { font-weight: 700; font-size: 17px; }
+  .desc { font-size: 10.5px; letter-spacing: 3px; color: #f5b942; font-weight: 700; margin-top: 3px; }
+  h1 { font-size: clamp(19px, 2.6vw, 26px); margin: 8px 0 2px; }
+  .sub { color: rgba(247,243,236,.7); font-size: clamp(13px, 1.8vw, 17px); margin: 0 0 6px; }
+  .counts { font-size: clamp(14px, 2vw, 19px); margin: 4px 0 8px; color: rgba(247,243,236,.85); }
+  .counts b { color: #4cc98f; } .counts .left { color: #f5b942; font-weight: 700; }
+  .stage { width: 100%; max-width: 780px; margin: 0 auto; flex: 1; display: flex; flex-direction: column; justify-content: center; padding-bottom: 14px; }
+  .card { position: relative; width: 100%; flex: 1; min-height: 380px; max-height: 720px; cursor: pointer; }
+  .face { height: 100%; border-radius: 24px; padding: clamp(16px, 3vw, 34px); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+          gap: clamp(8px, 1.5vh, 16px); overflow-y: auto; animation: pop .18s ease-out; }
+  @keyframes pop { from { transform: scale(.97); opacity: .5; } to { transform: scale(1); opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) { .face { animation: none; } }
+  .card .back { display: none; }
+  .card.flipped .front { display: none; }
+  .card.flipped .back { display: flex; }
+  .front { background: #161f3a; border: 3px solid #2a3558; }
+  .front.rulecard { border-color: #f5b942; }
+  .back { background: #f7f3ec; color: #1e2233; border: 3px solid #f5b942;
+          --chain: clamp(28px, 5.4vw, 52px); --box: clamp(22px, 4vw, 38px); --om: clamp(19px, 3vw, 28px); --lad: clamp(16px, 2.5vw, 24px); }
+  .ans .fr { font-size: .85em; }
+  @media (max-height: 880px) {
+    .back { --chain: clamp(24px, 4vw, 40px); --box: clamp(19px, 2.8vw, 28px); --om: clamp(17px, 2.4vw, 24px); }
+    .ans { font-size: clamp(26px, 4vw, 42px); }
+    .face { gap: 8px; }
+  }
+  .meta { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; justify-content: center; }
+  .idea { background: #f5b942; color: #0f1729; font-weight: 800; font-size: clamp(12px, 1.6vw, 15px); letter-spacing: 1.5px; border-radius: 999px; padding: 5px 14px; }
+  .src { font-size: clamp(12px, 1.5vw, 14px); color: rgba(247,243,236,.55); }
+  #f-body { display: flex; flex-direction: column; align-items: center; gap: clamp(10px, 1.8vh, 18px); width: 100%; }
+  .q { font-size: clamp(24px, 4.2vw, 42px); font-weight: 700; line-height: 1.25; text-wrap: balance; }
+  .q.big { font-size: clamp(34px, 6.4vw, 62px); }
+  .qsm { font-size: .5em; color: rgba(247,243,236,.75); }
+  .tbl { border-collapse: collapse; font-size: clamp(18px, 2.8vw, 27px); }
+  .tbl th, .tbl td { border: 2px solid #39466f; padding: 4px 16px; }
+  .tbl th { color: #f5b942; font-size: .8em; }
+  .tbl td:last-child { text-align: center; font-weight: 700; }
+  .syms { display: flex; flex-wrap: wrap; justify-content: center; gap: 2px 6px; font-size: clamp(30px, 5.4vw, 50px); max-width: 640px; }
+  .syms .sa { color: #f5b942; } .syms .sb { color: #8fb4ef; }
+  .tapnote { font-size: clamp(13px, 1.7vw, 16px); color: rgba(247,243,236,.55); }
+  .ans { font-size: clamp(28px, 5vw, 50px); font-weight: 700; line-height: 1.2; text-wrap: balance; }
+  .chip { display: inline-flex; align-items: center; font-family: "Atkinson Hyperlegible", Inter, sans-serif; font-weight: 700; border-radius: 12px; padding: 4px 12px; }
+  .chip.ok { background: #e6f4ec; border: 2px solid #2e7d52; color: #1e2233; font-size: clamp(17px, 2.6vw, 25px); }
+  .how { font-size: clamp(17px, 2.4vw, 23px); line-height: 1.4; color: #3b3529; }
+  .tip { font-size: clamp(15px, 2.1vw, 20px); line-height: 1.4; color: #7a5a00; background: #fbefd2; border-radius: 12px; padding: 8px 14px; font-weight: 600; }
+  #b-how, #b-viz, #b-tip { width: 100%; }
+  #b-viz { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+  .row { display: flex; gap: 12px; margin-top: 16px; }
+  .btn { font: inherit; font-size: clamp(18px, 2.5vw, 24px); font-weight: 800; cursor: pointer; border: none; border-radius: 16px; padding: 18px 10px; color: #fff; flex: 1; min-height: 62px; }
+  .again { background: #c75a38; box-shadow: 0 4px 0 #8f3517; }
+  .got { background: #2fa36b; box-shadow: 0 4px 0 #1d6b45; }
+  .win { display: none; text-align: center; padding: 40px 16px; }
+  .win .emoji { font-size: 72px; }
+  .win h2 { font-family: "Atkinson Hyperlegible", Inter, sans-serif; color: #f5b942; font-size: 28px; }
+  .win p { font-size: 18px; }
+  .winrow { display: flex; flex-direction: column; gap: 12px; align-items: center; }
+  .resetbtn { font: inherit; font-weight: 800; font-size: 17px; cursor: pointer; border: none; border-radius: 14px; padding: 15px 26px; min-width: 240px; }
+  .mix { background: #f5b942; color: #0f1729; }
+  .inorder { background: #232f52; color: #f7f3ec; border: 2px solid #39466f; }
+
+  .fx { white-space: nowrap; }
+  .fr { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; font-size: .72em; line-height: 1.05; margin: 0 .06em; }
+  .fr .den { border-top: .09em solid currentColor; }
+  .chain { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: .15em .3em;
+           font-family: "Atkinson Hyperlegible", Inter, sans-serif; font-weight: 700; font-size: var(--chain); }
+  .chain .fr { font-size: 1em; }
+  .chain.sum { font-size: calc(var(--chain) * .8); }
+  .step { display: inline-flex; flex-direction: column; align-items: center; font-size: .56em; color: #2b5aa0; line-height: 1; }
+  .step .arr { font-size: 1.3em; }
+  .qno { font-size: .72em; color: #8a8273; font-weight: 700; }
+  .final { display: inline-flex; background: #e6f4ec; border: 2px solid #2e7d52; border-radius: .25em; padding: .05em .2em; }
+  .done { font-size: .42em; color: #2e7d52; font-weight: 800; white-space: nowrap; }
+  .boxwrap { display: flex; flex-direction: column; align-items: center; gap: .2em; }
+  table.box { border-collapse: collapse; font-family: "Atkinson Hyperlegible", Inter, sans-serif; font-weight: 700; font-size: var(--box); }
+  table.box td.qt { color: #a8790a; text-align: center; padding: 0 .4em .1em; }
+  table.box td.dv { color: #2b5aa0; padding-right: .35em; text-align: right; }
+  table.box td.bx { border: .1em solid #1e2233; padding: .2em .55em; text-align: right; min-width: 2.6em; background: #fff; vertical-align: top; line-height: 1.15; }
+  table.box td.bx .scoop { color: #6b6457; border-bottom: .07em solid #1e2233; }
+  table.box td.bx .rem.zero { color: #2e7d52; }
+  .sumline { font-size: calc(var(--box) * .75); color: #3b3529; }
+  .sumline b { color: #2e7d52; }
+  .omap { display: flex; flex-direction: column; gap: .3em; align-items: center; font-size: var(--om); }
+  .orow { display: flex; align-items: center; gap: .4em; }
+  .oword { font-weight: 700; min-width: 4.6em; text-align: right; }
+  .slot { display: inline-block; min-width: 1.8em; text-align: center; border-radius: .3em; padding: .05em .3em; font-family: "Atkinson Hyperlegible", Inter, sans-serif; font-weight: 700; }
+  .s1 { background: #fbefd2; border: .12em solid #a8790a; color: #1e2233; }
+  .s2 { background: #e3ebf7; border: .12em dashed #2b5aa0; color: #1e2233; }
+  .olab { font-size: .7em; color: #8a8273; font-weight: 700; }
+  .oratio { font-size: 1.25em; font-weight: 700; margin-top: .1em; }
+  .arrow { color: #2e7d52; font-weight: 800; }
+  .forms { display: inline-flex; flex-wrap: wrap; gap: .3em; justify-content: center; }
+  .fbox { border: .08em solid #2e7d52; border-radius: .25em; padding: .05em .35em; background: #e6f4ec; }
+  .pair { display: flex; flex-direction: column; gap: .25em; align-items: center; }
+  .verdict { font-weight: 800; font-size: var(--om); }
+  .verdict.yes { color: #2e7d52; } .verdict.no { color: #1e2233; }
+  .cmp { display: flex; flex-direction: column; gap: .25em; align-items: center; font-family: "Atkinson Hyperlegible", Inter, sans-serif; font-weight: 700; font-size: var(--chain); }
+  .cmp .fr { font-size: 1em; }
+  .crow { display: flex; align-items: center; gap: .3em; }
+  .cname { font-size: .6em; min-width: 2.6em; text-align: right; }
+  .cwin { font-size: .6em; }
+  .cwin b { color: #2e7d52; }
+  .counts2 { font-size: var(--om); font-weight: 700; display: flex; flex-direction: column; gap: .1em; align-items: center; }
+  .counts2 .sa { color: #a8790a; } .counts2 .sb { color: #2b5aa0; }
+  .ladder { list-style: none; margin: 0; padding: 0; text-align: left; display: flex; flex-direction: column; gap: .28em; font-size: var(--lad); line-height: 1.25; }
+  .ladder li { display: flex; gap: .45em; align-items: flex-start; }
+  .lno { flex: none; width: 1.45em; height: 1.45em; border-radius: 50%; background: #f5b942; color: #0f1729; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; font-size: .85em; }
+  .ladder b { color: #2b5aa0; white-space: nowrap; }
+  .ladder li:last-child b { color: #2e7d52; }
+  .loop { font-size: var(--lad); font-weight: 800; color: #2b5aa0; margin-top: .3em; }
+  .hidden { display: flex; flex-wrap: wrap; gap: .35em; justify-content: center; }
+  svg.bar { width: 100%; max-width: 560px; height: auto; }
+  .bar + .sumline { font-size: var(--om); }
+</style>
+</head>
+<body>
+<div class="top">
+  <div class="lockup"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
+  <rect width="640" height="640" rx="120" fill="#0F1729"/>
+  <g transform="translate(60,190) scale(0.494)">
+    <path fill="#F7F3EC" d="M915.61,342.15c-35.13,30.74-89.5,22.29-113.65-17.66L611.96,11.58c-4.36-7.19-12.17-11.58-20.59-11.58h-237.26l207.62,341.94-.24.21c-35.13,30.74-89.5,22.29-113.65-17.66L257.85,11.58c-4.36-7.19-12.17-11.58-20.59-11.58H0l346.93,571.37c19.95,32.86,67.83,32.34,87.05-.96l64.26-111.29,65.88-113.26,136.93,225.51c19.95,32.86,67.83,32.34,87.05-.96l64.26-111.29,72.99-125.48-9.73,8.51Z"/>
+    <path fill="#F5B942" d="M780,28 C850,2 895,12 912,46 C929,12 974,2 1044,28 L1044,196 C980,176 938,184 912,214 C886,184 844,176 780,196 Z"/>
+    <path stroke="#0F1729" stroke-width="16" fill="none" d="M912,52 L912,208"/>
+  </g>
+</svg><span class="wm">wasiendo</span><span class="desc">ACADEMY</span></div>
+  <h1>Ratio &amp; Unit Rate Flash Cards</h1>
+  <p class="sub">Tap the card to flip · 6 big ideas · gold cards are the big ideas</p>
+</div>
+<div class="counts"><span class="left" id="left"></span> in the deck · <b id="done">0</b> mastered</div>
+<div class="stage" id="stage">
+  <div class="card" id="card">
+    <div class="face front" id="front">
+      <div class="meta"><span class="idea" id="f-idea"></span><span class="src" id="f-src"></span></div>
+      <div id="f-body"></div>
+      <div class="tapnote">tap to flip ↻</div>
+    </div>
+    <div class="face back">
+      <div class="ans" id="b-ans"></div>
+      <div id="b-how"></div>
+      <div id="b-viz"></div>
+      <div id="b-tip"></div>
+    </div>
+  </div>
+  <div class="row">
+    <button class="btn again" id="againbtn" type="button">🔁 AGAIN</button>
+    <button class="btn got" id="gotbtn" type="button">✓ GOT IT</button>
+  </div>
+</div>
+<div class="win" id="win">
+  <div class="emoji">🏆</div>
+  <h2>All 32 mastered!</h2>
+  <p>Now mix them up. Test questions come in any order.</p>
+  <div class="winrow">
+    <button class="resetbtn mix" id="mixbtn" type="button">🔀 Play again, mixed up</button>
+    <button class="resetbtn inorder" id="resetbtn" type="button">Start over in order</button>
+  </div>
+</div>
+<script>
+const CARDS = [{"idea": "WHO'S FIRST", "src": "big idea", "rule": true, "front": "<div class=\"q\">3 dogs and 5 cats.<br>Write <b>dogs to cats</b>.</div>", "ans": "3 : 5", "how": "<div class=\"how\">First word → first spot.</div>", "viz": "<div class=\"omap\"><div class=\"orow\"><span class=\"oword\">dogs</span><span class=\"arrow\">→</span><span class=\"slot s1\">3</span><span class=\"olab\">1st</span></div><div class=\"orow\"><span class=\"oword\">cats</span><span class=\"arrow\">→</span><span class=\"slot s2\">5</span><span class=\"olab\">2nd</span></div><div class=\"oratio\"><span class=\"slot s1\">3</span> : <span class=\"slot s2\">5</span></div></div>", "tip": ""}, {"idea": "WHO'S FIRST", "src": "like review #7", "rule": false, "front": "<table class=\"tbl\"><tr><th>Snack bag</th><th>How many</th></tr><tr><td>Pretzels</td><td>12</td></tr><tr><td>Raisins</td><td>15</td></tr><tr><td>Almonds</td><td>16</td></tr><tr><td>Crackers</td><td>29</td></tr></table><div class=\"q\"><b>crackers to almonds</b></div>", "ans": "29 : 16", "how": "", "viz": "<div class=\"omap\"><div class=\"orow\"><span class=\"oword\">crackers</span><span class=\"arrow\">→</span><span class=\"slot s1\">29</span><span class=\"olab\">1st</span></div><div class=\"orow\"><span class=\"oword\">almonds</span><span class=\"arrow\">→</span><span class=\"slot s2\">16</span><span class=\"olab\">2nd</span></div><div class=\"oratio\"><span class=\"slot s1\">29</span> : <span class=\"slot s2\">16</span></div></div>", "tip": "<div class=\"tip\">Trap: adding every row (72).</div>"}, {"idea": "WHO'S FIRST", "src": "like review #8", "rule": false, "front": "<table class=\"tbl\"><tr><th>Cars in the lot</th><th>How many</th></tr><tr><td>Black</td><td>27</td></tr><tr><td>White</td><td>34</td></tr><tr><td>Silver</td><td>18</td></tr><tr><td>Red</td><td>6</td></tr></table><div class=\"q\"><b>TOTAL</b> cars <b>to silver</b> cars</div>", "ans": "85 : 18", "how": "<div class=\"how\">TOTAL = add every row.</div>", "viz": "<div class=\"chain sum\"><span class=\"sv\">27</span><span class=\"step\">+34<span class=\"arr\">→</span></span><span class=\"sv\">61</span><span class=\"step\">+18<span class=\"arr\">→</span></span><span class=\"sv\">79</span><span class=\"step\">+6<span class=\"arr\">→</span></span><span class=\"sv final\">85</span></div><div class=\"omap\"><div class=\"orow\"><span class=\"oword\">total</span><span class=\"arrow\">→</span><span class=\"slot s1\">85</span><span class=\"olab\">1st</span></div><div class=\"orow\"><span class=\"oword\">silver</span><span class=\"arrow\">→</span><span class=\"slot s2\">18</span><span class=\"olab\">2nd</span></div><div class=\"oratio\"><span class=\"slot s1\">85</span> : <span class=\"slot s2\">18</span></div></div>", "tip": ""}, {"idea": "SIMPLEST FORM", "src": "big idea", "rule": true, "front": "<div class=\"q\">How do you put a ratio in <b>simplest form</b>?</div>", "ans": "Run the shrink questions", "how": "", "viz": "<ol class=\"ladder\"><li><span class=\"lno\">1</span><span>Look at the last digits.</span></li><li><span class=\"lno\">2</span><span>Both even? → <b>÷2</b></span></li><li><span class=\"lno\">3</span><span>Both end in 0 or 5? → <b>÷5</b></span></li><li><span class=\"lno\">4</span><span>Add each number's digits. Both totals 3, 6, 9, 12, 15, 18? → <b>÷3</b></span></li><li><span class=\"lno\">5</span><span>Does the smaller fit into the bigger? → <b>÷ the smaller</b></span></li><li><span class=\"lno\">6</span><span>Both in the 7 row of the chart? → <b>÷7</b></span></li><li><span class=\"lno\">7</span><span>All no — or a 1 → <b>DONE ✓</b></span></li></ol><div class=\"loop\">↻ Divided? Go back to 1.</div>", "tip": ""}, {"idea": "SIMPLEST FORM", "src": "big idea", "rule": true, "front": "<div class=\"q\">A ratio comes out <span class=\"fr\"><span class=\"num\">9</span><span class=\"den\">4</span></span>.<br>Change it to 2¼?</div>", "ans": "NO — leave it <span class=\"fr\"><span class=\"num\">9</span><span class=\"den\">4</span></span>", "how": "<div class=\"how\">Ratios never unpack. 9 to 4 means 9 for every 4.</div>", "viz": "", "tip": "<div class=\"tip\">A 1 on the bottom stays too: 15 to 1.</div>"}, {"idea": "SIMPLEST FORM", "src": "like review #1", "rule": false, "front": "<div class=\"q big\">15 to 85<br><span class='qsm'>simplest form?</span></div>", "ans": "<span class=\"fr\"><span class=\"num\">3</span><span class=\"den\">17</span></span>", "how": "", "viz": "<div class=\"chain\"><span class=\"fr\"><span class=\"num\">15</span><span class=\"den\">85</span></span><span class=\"step\"><span class=\"qno\">#3</span>÷5<span class=\"arr\">→</span></span><span class=\"final\"><span class=\"fr\"><span class=\"num\">3</span><span class=\"den\">17</span></span></span><span class=\"done\">✓ DONE</span></div>", "tip": ""}, {"idea": "SIMPLEST FORM", "src": "like review #4", "rule": false, "front": "<div class=\"q big\">4 to 28<br><span class='qsm'>simplest form?</span></div>", "ans": "<span class=\"fr\"><span class=\"num\">1</span><span class=\"den\">7</span></span>", "how": "", "viz": "<div class=\"chain\"><span class=\"fr\"><span class=\"num\">4</span><span class=\"den\">28</span></span><span class=\"step\"><span class=\"qno\">#2</span>÷2<span class=\"arr\">→</span></span><span class=\"fr\"><span class=\"num\">2</span><span class=\"den\">14</span></span><span class=\"step\"><span class=\"qno\">#2</span>÷2<span class=\"arr\">→</span></span><span class=\"final\"><span class=\"fr\"><span class=\"num\">1</span><span class=\"den\">7</span></span></span><span class=\"done\">✓ DONE</span></div>", "tip": ""}, {"idea": "SIMPLEST FORM", "src": "like review #5", "rule": false, "front": "<div class=\"q big\">340 to 1000<br><span class='qsm'>simplest form?</span></div>", "ans": "<span class=\"fr\"><span class=\"num\">17</span><span class=\"den\">50</span></span>", "how": "", "viz": "<div class=\"chain\"><span class=\"fr\"><span class=\"num\">340</span><span class=\"den\">1000</span></span><span class=\"step\"><span class=\"qno\">#2</span>÷2<span class=\"arr\">→</span></span><span class=\"fr\"><span class=\"num\">170</span><span class=\"den\">500</span></span><span class=\"step\"><span class=\"qno\">#2</span>÷2<span class=\"arr\">→</span></span><span class=\"fr\"><span class=\"num\">85</span><span class=\"den\">250</span></span><span class=\"step\"><span class=\"qno\">#3</span>÷5<span class=\"arr\">→</span></span><span class=\"final\"><span class=\"fr\"><span class=\"num\">17</span><span class=\"den\">50</span></span></span><span class=\"done\">✓ DONE</span></div>", "tip": ""}, {"idea": "SIMPLEST FORM", "src": "like review #6", "rule": false, "front": "<div class=\"q big\">21 to 24<br><span class='qsm'>simplest form?</span></div>", "ans": "<span class=\"fr\"><span class=\"num\">7</span><span class=\"den\">8</span></span>", "how": "<div class=\"how\">Digits: 2+1 = 3 and 2+4 = 6</div>", "viz": "<div class=\"chain\"><span class=\"fr\"><span class=\"num\">21</span><span class=\"den\">24</span></span><span class=\"step\"><span class=\"qno\">#4</span>÷3<span class=\"arr\">→</span></span><span class=\"final\"><span class=\"fr\"><span class=\"num\">7</span><span class=\"den\">8</span></span></span><span class=\"done\">✓ DONE</span></div>", "tip": ""}, {"idea": "SIMPLEST FORM", "src": "like review #9", "rule": false, "front": "<div class=\"q big\">56 to 35<br><span class='qsm'>simplest form?</span></div>", "ans": "8 to 5", "how": "<div class=\"how\">2, 5, 3 and #5 all say no → check the 7 row</div>", "viz": "<div class=\"chain\"><span class=\"fr\"><span class=\"num\">56</span><span class=\"den\">35</span></span><span class=\"step\"><span class=\"qno\">#6</span>÷7<span class=\"arr\">→</span></span><span class=\"final\"><span class=\"fr\"><span class=\"num\">8</span><span class=\"den\">5</span></span></span><span class=\"done\">✓ DONE</span></div>", "tip": "<div class=\"tip\">Test drive: 8 × 7 = 56 ✓ 5 × 7 = 35 ✓</div>"}, {"idea": "SIMPLEST FORM", "src": "like review #15", "rule": false, "front": "<div class=\"q big\">195 to 13<br><span class='qsm'>simplest form?</span></div>", "ans": "15 to 1", "how": "<div class=\"how\">#5: does 13 fit into 195? Box it:</div>", "viz": "<div class=\"chain\"><span class=\"fr\"><span class=\"num\">195</span><span class=\"den\">13</span></span><span class=\"step\"><span class=\"qno\">#5</span>÷13<span class=\"arr\">→</span></span><span class=\"final\"><span class=\"fr\"><span class=\"num\">15</span><span class=\"den\">1</span></span></span><span class=\"done\">✓ DONE</span></div><div class=\"boxwrap\"><table class=\"box\"><tr><td></td><td class=\"qt\">10</td><td class=\"qt\">5</td></tr><tr><td class=\"dv\">13</td><td class=\"bx\"><div>195</div><div class=\"scoop\">−130</div><div class=\"rem\">65</div></td><td class=\"bx\"><div>65</div><div class=\"scoop\">−65</div><div class=\"rem zero\">0</div></td></tr></table><div class=\"sumline\">10 + 5 = <b>15</b></div></div>", "tip": "<div class=\"tip\">Keep the 1.</div>"}, {"idea": "SIMPLEST FORM", "src": "like review #2", "rule": false, "front": "<div class=\"syms\"><span class=\"sa\">▲</span><span class=\"sb\">■</span><span class=\"sa\">▲</span><span class=\"sa\">▲</span><span class=\"sb\">■</span><span class=\"sa\">▲</span><span class=\"sa\">▲</span><span class=\"sb\">■</span><span class=\"sa\">▲</span><span class=\"sa\">▲</span><span class=\"sb\">■</span><span class=\"sa\">▲</span><span class=\"sb\">■</span><span class=\"sa\">▲</span><span class=\"sa\">▲</span><span class=\"sb\">■</span></div><div class=\"q\"><b>▲ to ■</b> in simplest form</div>", "ans": "5 : 3", "how": "<div class=\"how\">Count first, then shrink.</div>", "viz": "<div class=\"counts2\"><div><span class=\"sa\">▲▲▲▲▲▲▲▲▲▲</span> = <b>10</b></div><div><span class=\"sb\">■■■■■■</span> = <b>6</b></div></div><div class=\"chain\"><span class=\"fr\"><span class=\"num\">10</span><span class=\"den\">6</span></span><span class=\"step\"><span class=\"qno\">#2</span>÷2<span class=\"arr\">→</span></span><span class=\"final\"><span class=\"fr\"><span class=\"num\">5</span><span class=\"den\">3</span></span></span><span class=\"done\">✓ DONE</span></div>", "tip": "<div class=\"tip\">Tap each one as you count.</div>"}, {"idea": "3 FORMS", "src": "big idea", "rule": true, "front": "<div class=\"q\">Write <b>2 : 7</b> three ways.</div>", "ans": "<span class=\"fr\"><span class=\"num\">2</span><span class=\"den\">7</span></span> · 2 to 7 · 2 : 7", "how": "<div class=\"how\">Same order all three times.</div>", "viz": "", "tip": "<div class=\"tip\">Flipped (<span class=\"fr\"><span class=\"num\">7</span><span class=\"den\">2</span></span>) is a different ratio.</div>"}, {"idea": "3 FORMS", "src": "like review #3", "rule": false, "front": "<div class=\"q\">Write <b>6 : 8</b> the other 2 ways.</div>", "ans": "6 to 8 · <span class=\"fr\"><span class=\"num\">6</span><span class=\"den\">8</span></span>", "how": "", "viz": "", "tip": "<div class=\"tip\">Shrunk is right too: 3 to 4 · <span class=\"fr\"><span class=\"num\">3</span><span class=\"den\">4</span></span>. Pick whichever the choices show.</div>"}, {"idea": "3 FORMS", "src": "like review #13", "rule": false, "front": "<div class=\"q\">45 kids ride the bus. 30 walk.<br><b>Bus to walk</b> — all 3 forms.</div>", "ans": "<span class=\"fr\"><span class=\"num\">3</span><span class=\"den\">2</span></span> · 3 to 2 · 3 : 2", "how": "", "viz": "<div class=\"chain\"><span class=\"fr\"><span class=\"num\">45</span><span class=\"den\">30</span></span><span class=\"step\"><span class=\"qno\">#3</span>÷5<span class=\"arr\">→</span></span><span class=\"fr\"><span class=\"num\">9</span><span class=\"den\">6</span></span><span class=\"step\"><span class=\"qno\">#4</span>÷3<span class=\"arr\">→</span></span><span class=\"final\"><span class=\"fr\"><span class=\"num\">3</span><span class=\"den\">2</span></span></span><span class=\"done\">✓ DONE</span></div>", "tip": "<div class=\"tip\">Trap: <span class=\"fr\"><span class=\"num\">3</span><span class=\"den\">5</span></span> uses the total.</div>"}, {"idea": "3 FORMS", "src": "like review #14", "rule": false, "front": "<div class=\"q\">32 boys, 48 girls.<br><b>Boys to girls</b> — all 3 forms.</div>", "ans": "<span class=\"fr\"><span class=\"num\">2</span><span class=\"den\">3</span></span> · 2 to 3 · 2 : 3", "how": "<div class=\"how\">Still both even? Keep halving.</div>", "viz": "<div class=\"chain\"><span class=\"fr\"><span class=\"num\">32</span><span class=\"den\">48</span></span><span class=\"step\"><span class=\"qno\">#2</span>÷2<span class=\"arr\">→</span></span><span class=\"fr\"><span class=\"num\">16</span><span class=\"den\">24</span></span><span class=\"step\"><span class=\"qno\">#2</span>÷2<span class=\"arr\">→</span></span><span class=\"fr\"><span class=\"num\">8</span><span class=\"den\">12</span></span><span class=\"step\"><span class=\"qno\">#2</span>÷2<span class=\"arr\">→</span></span><span class=\"fr\"><span class=\"num\">4</span><span class=\"den\">6</span></span><span class=\"step\"><span class=\"qno\">#2</span>÷2<span class=\"arr\">→</span></span><span class=\"final\"><span class=\"fr\"><span class=\"num\">2</span><span class=\"den\">3</span></span></span><span class=\"done\">✓ DONE</span></div>", "tip": "<div class=\"tip\">Trap: <span class=\"fr\"><span class=\"num\">2</span><span class=\"den\">5</span></span> uses the total.</div>"}, {"idea": "UNIT RATE", "src": "big idea", "rule": true, "front": "<div class=\"q\"><b>Unit rate</b> means how much for …?</div>", "ans": "ONE", "how": "<div class=\"how\">Divide by the number you want to be 1.</div>", "viz": "<div class=\"chain\"><span class=\"fr\"><span class=\"num\">$12</span><span class=\"den\">3 bags</span></span><span class=\"step\">÷3<span class=\"arr\">→</span></span><span class=\"final\"><span class=\"fr\"><span class=\"num\">$4</span><span class=\"den\">1 bag</span></span></span></div>", "tip": ""}, {"idea": "UNIT RATE", "src": "like review #10", "rule": false, "front": "<div class=\"q\">432 km in 4 hours.<br>Unit rate?</div>", "ans": "108 km per hour", "how": "<div class=\"how\">km ÷ hours</div>", "viz": "<div class=\"boxwrap\"><table class=\"box\"><tr><td></td><td class=\"qt\">100</td><td class=\"qt\">8</td></tr><tr><td class=\"dv\">4</td><td class=\"bx\"><div>432</div><div class=\"scoop\">−400</div><div class=\"rem\">32</div></td><td class=\"bx\"><div>32</div><div class=\"scoop\">−32</div><div class=\"rem zero\">0</div></td></tr></table><div class=\"sumline\">100 + 8 = <b>108</b></div></div>", "tip": ""}, {"idea": "UNIT RATE", "src": "like review #12", "rule": false, "front": "<div class=\"q\">$355 for 5 nights.<br>Unit rate?</div>", "ans": "$71 per night", "how": "<div class=\"how\">$ ÷ nights</div>", "viz": "<div class=\"boxwrap\"><table class=\"box\"><tr><td></td><td class=\"qt\">70</td><td class=\"qt\">1</td></tr><tr><td class=\"dv\">5</td><td class=\"bx\"><div>355</div><div class=\"scoop\">−350</div><div class=\"rem\">5</div></td><td class=\"bx\"><div>5</div><div class=\"scoop\">−5</div><div class=\"rem zero\">0</div></td></tr></table><div class=\"sumline\">70 + 1 = <b>71</b></div></div>", "tip": ""}, {"idea": "UNIT RATE", "src": "like review #18", "rule": false, "front": "<div class=\"q\">228 miles in 4 hours.<br>Miles per hour?</div>", "ans": "57 miles per hour", "how": "<div class=\"how\">miles ÷ hours</div>", "viz": "<div class=\"boxwrap\"><table class=\"box\"><tr><td></td><td class=\"qt\">50</td><td class=\"qt\">7</td></tr><tr><td class=\"dv\">4</td><td class=\"bx\"><div>228</div><div class=\"scoop\">−200</div><div class=\"rem\">28</div></td><td class=\"bx\"><div>28</div><div class=\"scoop\">−28</div><div class=\"rem zero\">0</div></td></tr></table><div class=\"sumline\">50 + 7 = <b>57</b></div></div>", "tip": ""}, {"idea": "UNIT RATE", "src": "like review #11", "rule": false, "front": "<div class=\"q\">4 pens cost $3.96.<br>Price for 1 pen?</div>", "ans": "$0.99", "how": "<div class=\"how\">Use cents: $3.96 = 396¢</div>", "viz": "<div class=\"boxwrap\"><table class=\"box\"><tr><td></td><td class=\"qt\">90</td><td class=\"qt\">9</td></tr><tr><td class=\"dv\">4</td><td class=\"bx\"><div>396</div><div class=\"scoop\">−360</div><div class=\"rem\">36</div></td><td class=\"bx\"><div>36</div><div class=\"scoop\">−36</div><div class=\"rem zero\">0</div></td></tr></table><div class=\"sumline\">90 + 9 = <b>99</b>¢</div></div>", "tip": ""}, {"idea": "UNIT RATE", "src": "like review #11", "rule": false, "front": "<div class=\"q\">10 pens cost $11.00.<br>Price for 1 pen?</div>", "ans": "$1.10", "how": "<div class=\"how\">Use cents: $11.00 = 1100¢</div>", "viz": "<div class=\"boxwrap\"><table class=\"box\"><tr><td></td><td class=\"qt\">100</td><td class=\"qt\">10</td></tr><tr><td class=\"dv\">10</td><td class=\"bx\"><div>1100</div><div class=\"scoop\">−1000</div><div class=\"rem\">100</div></td><td class=\"bx\"><div>100</div><div class=\"scoop\">−100</div><div class=\"rem zero\">0</div></td></tr></table><div class=\"sumline\">100 + 10 = <b>110</b>¢</div></div>", "tip": ""}, {"idea": "UNIT RATE", "src": "like review #11", "rule": false, "front": "<div class=\"q\">Better deal?<br>4-pack at $0.99 each<br>10-pack at $1.10 each</div>", "ans": "4-pack at $0.99", "how": "<div class=\"how\">Less money for ONE = better deal.</div>", "viz": "", "tip": "<div class=\"tip\">Match the pack AND the price.</div>"}, {"idea": "UNIT RATE", "src": "like review #16", "rule": false, "front": "<div class=\"q\">Ana: 7 laps in 10 min.<br>Ben: 8 laps in 11 min.<br>More laps <b>per minute</b>?</div>", "ans": "Ben", "how": "<div class=\"how\">Same form first: make the bottoms match.</div>", "viz": "<div class=\"cmp\"><div class=\"crow\"><span class=\"cname\">Ana</span><span class=\"fr\"><span class=\"num\">7</span><span class=\"den\">10</span></span><span class=\"step\">×11<span class=\"arr\">→</span></span><span class=\"fr\"><span class=\"num\">77</span><span class=\"den\">110</span></span></div><div class=\"crow\"><span class=\"cname\">Ben</span><span class=\"fr\"><span class=\"num\">8</span><span class=\"den\">11</span></span><span class=\"step\">×10<span class=\"arr\">→</span></span><span class=\"fr\"><span class=\"num\">80</span><span class=\"den\">110</span></span></div><div class=\"cwin\">80 &gt; 77 → <b>Ben</b></div></div>", "tip": ""}, {"idea": "PROPORTIONAL?", "src": "big idea", "rule": true, "front": "<div class=\"q\">When are two ratios <b>proportional</b>?</div>", "ans": "When they shrink to the SAME fraction", "how": "", "viz": "<div class=\"pair\"><div class=\"chain\"><span class=\"fr\"><span class=\"num\">4</span><span class=\"den\">6</span></span><span class=\"step\"><span class=\"qno\">#2</span>÷2<span class=\"arr\">→</span></span><span class=\"final\"><span class=\"fr\"><span class=\"num\">2</span><span class=\"den\">3</span></span></span><span class=\"done\">✓ DONE</span></div><div class=\"chain\"><span class=\"fr\"><span class=\"num\">10</span><span class=\"den\">15</span></span><span class=\"step\"><span class=\"qno\">#3</span>÷5<span class=\"arr\">→</span></span><span class=\"final\"><span class=\"fr\"><span class=\"num\">2</span><span class=\"den\">3</span></span></span><span class=\"done\">✓ DONE</span></div></div><div class=\"verdict yes\">same → proportional ✓</div>", "tip": ""}, {"idea": "PROPORTIONAL?", "src": "like review #19", "rule": false, "front": "<div class=\"q big\"><span class=\"fr\"><span class=\"num\">3</span><span class=\"den\">15</span></span> and <span class=\"fr\"><span class=\"num\">7</span><span class=\"den\">35</span></span><br>proportional?</div>", "ans": "Proportional", "how": "", "viz": "<div class=\"pair\"><div class=\"chain\"><span class=\"fr\"><span class=\"num\">3</span><span class=\"den\">15</span></span><span class=\"step\"><span class=\"qno\">#4</span>÷3<span class=\"arr\">→</span></span><span class=\"final\"><span class=\"fr\"><span class=\"num\">1</span><span class=\"den\">5</span></span></span><span class=\"done\">✓ DONE</span></div><div class=\"chain\"><span class=\"fr\"><span class=\"num\">7</span><span class=\"den\">35</span></span><span class=\"step\"><span class=\"qno\">#5</span>÷7<span class=\"arr\">→</span></span><span class=\"final\"><span class=\"fr\"><span class=\"num\">1</span><span class=\"den\">5</span></span></span><span class=\"done\">✓ DONE</span></div></div><div class=\"verdict yes\">same → proportional ✓</div>", "tip": ""}, {"idea": "PROPORTIONAL?", "src": "like review #20", "rule": false, "front": "<div class=\"q big\"><span class=\"fr\"><span class=\"num\">9</span><span class=\"den\">8</span></span> and <span class=\"fr\"><span class=\"num\">45</span><span class=\"den\">40</span></span><br>proportional?</div>", "ans": "Proportional", "how": "", "viz": "<div class=\"pair\"><div class=\"chain\"><span class=\"final\"><span class=\"fr\"><span class=\"num\">9</span><span class=\"den\">8</span></span></span><span class=\"done\">✓ DONE</span></div><div class=\"chain\"><span class=\"fr\"><span class=\"num\">45</span><span class=\"den\">40</span></span><span class=\"step\"><span class=\"qno\">#3</span>÷5<span class=\"arr\">→</span></span><span class=\"final\"><span class=\"fr\"><span class=\"num\">9</span><span class=\"den\">8</span></span></span><span class=\"done\">✓ DONE</span></div></div><div class=\"verdict yes\">same → proportional ✓</div>", "tip": "<div class=\"tip\">Read the WORD, not the letter. a and b can swap between questions.</div>"}, {"idea": "PROPORTIONAL?", "src": "new numbers", "rule": false, "front": "<div class=\"q big\"><span class=\"fr\"><span class=\"num\">2</span><span class=\"den\">5</span></span> and <span class=\"fr\"><span class=\"num\">6</span><span class=\"den\">16</span></span><br>proportional?</div>", "ans": "NOT proportional", "how": "", "viz": "<div class=\"pair\"><div class=\"chain\"><span class=\"final\"><span class=\"fr\"><span class=\"num\">2</span><span class=\"den\">5</span></span></span><span class=\"done\">✓ DONE</span></div><div class=\"chain\"><span class=\"fr\"><span class=\"num\">6</span><span class=\"den\">16</span></span><span class=\"step\"><span class=\"qno\">#2</span>÷2<span class=\"arr\">→</span></span><span class=\"final\"><span class=\"fr\"><span class=\"num\">3</span><span class=\"den\">8</span></span></span><span class=\"done\">✓ DONE</span></div></div><div class=\"verdict no\"><span class=\"fr\"><span class=\"num\">2</span><span class=\"den\">5</span></span> ≠ <span class=\"fr\"><span class=\"num\">3</span><span class=\"den\">8</span></span> → NOT proportional</div>", "tip": ""}, {"idea": "HIDDEN NUMBERS", "src": "big idea", "rule": true, "front": "<div class=\"q\">Inches → feet.<br>Multiply or divide?</div>", "ans": "DIVIDE by 12", "how": "<div class=\"how\">Bigger unit → fewer of them.</div>", "viz": "<svg class=\"bar\" viewBox=\"0 0 600 128\" role=\"img\" aria-label=\"36 inches is 3 feet\"><rect x=\"20\" y=\"18\" width=\"186\" height=\"44\" fill=\"#fbefd2\" stroke=\"#1e2233\" stroke-width=\"2.5\"/><text x=\"113\" y=\"47\" text-anchor=\"middle\" font-size=\"22\" font-weight=\"700\" font-family=\"Inter, Arial, sans-serif\" fill=\"#1e2233\">12 in</text><path d=\"M26,74 q0,12 12,12 h62 l9,10 l9,-10 h62 q12,0 12,-12\" fill=\"none\" stroke=\"#2b5aa0\" stroke-width=\"2.5\"/><text x=\"113\" y=\"118\" text-anchor=\"middle\" font-size=\"21\" font-weight=\"700\" font-family=\"Inter, Arial, sans-serif\" fill=\"#2b5aa0\">1 ft</text><rect x=\"206\" y=\"18\" width=\"186\" height=\"44\" fill=\"#f3e2b5\" stroke=\"#1e2233\" stroke-width=\"2.5\"/><text x=\"299\" y=\"47\" text-anchor=\"middle\" font-size=\"22\" font-weight=\"700\" font-family=\"Inter, Arial, sans-serif\" fill=\"#1e2233\">12 in</text><path d=\"M212,74 q0,12 12,12 h62 l9,10 l9,-10 h62 q12,0 12,-12\" fill=\"none\" stroke=\"#2b5aa0\" stroke-width=\"2.5\"/><text x=\"299\" y=\"118\" text-anchor=\"middle\" font-size=\"21\" font-weight=\"700\" font-family=\"Inter, Arial, sans-serif\" fill=\"#2b5aa0\">1 ft</text><rect x=\"392\" y=\"18\" width=\"186\" height=\"44\" fill=\"#fbefd2\" stroke=\"#1e2233\" stroke-width=\"2.5\"/><text x=\"485\" y=\"47\" text-anchor=\"middle\" font-size=\"22\" font-weight=\"700\" font-family=\"Inter, Arial, sans-serif\" fill=\"#1e2233\">12 in</text><path d=\"M398,74 q0,12 12,12 h62 l9,10 l9,-10 h62 q12,0 12,-12\" fill=\"none\" stroke=\"#2b5aa0\" stroke-width=\"2.5\"/><text x=\"485\" y=\"118\" text-anchor=\"middle\" font-size=\"21\" font-weight=\"700\" font-family=\"Inter, Arial, sans-serif\" fill=\"#2b5aa0\">1 ft</text></svg><div class=\"sumline\">36 in ÷ 12 = <b>3 ft</b></div>", "tip": ""}, {"idea": "HIDDEN NUMBERS", "src": "like review #21", "rule": false, "front": "<div class=\"q\">Change 456 inches to feet.</div>", "ans": "38 feet", "how": "<div class=\"how\">inches ÷ 12</div>", "viz": "<div class=\"boxwrap\"><table class=\"box\"><tr><td></td><td class=\"qt\">30</td><td class=\"qt\">8</td></tr><tr><td class=\"dv\">12</td><td class=\"bx\"><div>456</div><div class=\"scoop\">−360</div><div class=\"rem\">96</div></td><td class=\"bx\"><div>96</div><div class=\"scoop\">−96</div><div class=\"rem zero\">0</div></td></tr></table><div class=\"sumline\">30 + 8 = <b>38</b></div></div>", "tip": ""}, {"idea": "HIDDEN NUMBERS", "src": "big idea", "rule": true, "front": "<div class=\"q\">Hidden number!<br>1 week = ? days</div>", "ans": "7 days", "how": "", "viz": "<div class=\"hidden\"><span class=\"chip ok\">1 week = 7 days</span><span class=\"chip ok\">1 foot = 12 inches</span><span class=\"chip ok\">1 hour = 60 minutes</span><span class=\"chip ok\">1 dozen = 12</span></div>", "tip": ""}, {"idea": "HIDDEN NUMBERS", "src": "like review #22", "rule": false, "front": "<div class=\"q\">A plant grows 91 mm in one week.<br>How many mm per day?</div>", "ans": "13 mm per day", "how": "<div class=\"how\">1 week = 7 days → ÷7</div>", "viz": "<div class=\"boxwrap\"><table class=\"box\"><tr><td></td><td class=\"qt\">10</td><td class=\"qt\">3</td></tr><tr><td class=\"dv\">7</td><td class=\"bx\"><div>91</div><div class=\"scoop\">−70</div><div class=\"rem\">21</div></td><td class=\"bx\"><div>21</div><div class=\"scoop\">−21</div><div class=\"rem zero\">0</div></td></tr></table><div class=\"sumline\">10 + 3 = <b>13</b></div></div>", "tip": ""}];
+
+let deck = CARDS.map((_, i) => i);
+let mastered = 0;
+const card = document.getElementById('card');
+function render() {
+  document.getElementById('left').textContent = deck.length;
+  document.getElementById('done').textContent = mastered;
+  if (deck.length === 0) {
+    document.getElementById('stage').style.display = 'none';
+    document.getElementById('win').style.display = 'block';
+    return;
+  }
+  document.getElementById('stage').style.display = 'flex';
+  document.getElementById('win').style.display = 'none';
+  const c = CARDS[deck[0]];
+  card.classList.remove('flipped');
+  document.getElementById('front').classList.toggle('rulecard', c.rule);
+  document.getElementById('f-idea').textContent = (c.rule ? '\u2605 ' : '') + c.idea;
+  document.getElementById('f-src').textContent = c.src;
+  document.getElementById('f-body').innerHTML = c.front;
+  document.getElementById('b-ans').innerHTML = c.ans;
+  document.getElementById('b-how').innerHTML = c.how;
+  document.getElementById('b-viz').innerHTML = c.viz;
+  document.getElementById('b-tip').innerHTML = c.tip;
+}
+card.addEventListener('click', () => card.classList.toggle('flipped'));
+document.getElementById('againbtn').addEventListener('click', () => { deck.push(deck.shift()); render(); });
+document.getElementById('gotbtn').addEventListener('click', () => { deck.shift(); mastered++; render(); });
+document.getElementById('resetbtn').addEventListener('click', () => { deck = CARDS.map((_, i) => i); mastered = 0; render(); });
+document.getElementById('mixbtn').addEventListener('click', () => {
+  deck = CARDS.map((_, i) => i);
+  for (let i = deck.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [deck[i], deck[j]] = [deck[j], deck[i]]; }
+  mastered = 0; render();
+});
+render();
+
+</script>
+</body></html>
